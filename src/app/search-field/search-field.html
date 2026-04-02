@@ -1,0 +1,7 @@
+<div class="search-box">
+  <input
+    type="text"
+    [ngModel]="searchTerm"
+    (ngModelChange)="onValueChange($event)"
+    [placeholder]="placeholder" />
+</div>

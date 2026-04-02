@@ -61,3 +61,24 @@
   color: #6b7280;
   padding: 20px;
 }
+
+.custom-dialog .mat-mdc-dialog-container {
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.custom-dialog .mat-mdc-dialog-container {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .dialog-content {
+    grid-template-columns: 1fr;
+  }
+
+  .poster {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}

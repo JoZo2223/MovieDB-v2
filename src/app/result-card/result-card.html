@@ -1,0 +1,21 @@
+<div
+  class="result-card"
+  role="button"
+  tabindex="0"
+  (click)="onClick()"
+  (keydown)="onKeydown($event)">
+
+  @if (item.poster_path) {
+    <img
+      [src]="posterUrl"
+      [alt]="title"
+      class="poster" />
+  } @else {
+    <div class="poster placeholder">No image</div>
+  }
+
+  <div class="overlay">
+    <h3>{{ title }}</h3>
+    <p>{{ item.overview || 'No overview available.' }}</p>
+  </div>
+</div>

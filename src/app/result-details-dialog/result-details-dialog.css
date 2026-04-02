@@ -1,0 +1,74 @@
+.dialog-container {
+  position: relative;
+  padding: 24px;
+  min-width: 320px;
+  max-width: 900px;
+}
+
+.dialog-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+}
+
+.poster {
+  width: 260px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.poster.placeholder {
+  width: 260px;
+  height: 390px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  color: #6b7280;
+}
+
+.content h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.content p {
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.overview {
+  margin-top: 20px;
+}
+
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.state-message {
+  padding: 20px;
+}
+
+.state-message.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 768px) {
+  .dialog-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .poster,
+  .poster.placeholder {
+    width: 100%;
+    max-width: 260px;
+  }
+}

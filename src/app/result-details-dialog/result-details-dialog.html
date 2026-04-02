@@ -1,0 +1,46 @@
+<div class="dialog-container">
+  <button class="close-button" type="button" (click)="close()">✕</button>
+
+  @if (isLoading) {
+    <div class="state-message">Loading details...</div>
+  }
+
+  @if (errorMessage) {
+    <div class="state-message error">{{ errorMessage }}</div>
+  }
+
+  @if (!isLoading && detail) {
+    <div class="dialog-layout">
+      @if (detail.poster_path) {
+        <img
+          [src]="posterUrl"
+          [alt]="title"
+          class="poster" />
+      } @else {
+        <div class="poster placeholder">No image</div>
+      }
+
+      <div class="content">
+        <h2>{{ title }}</h2>
+
+        <p><strong>Release date:</strong> {{ date }}</p>
+        <p><strong>Rating:</strong> {{ detail.vote_average || 'N/A' }}</p>
+        <p><strong>Genres:</strong> {{ genreText }}</p>
+        <p><strong>Status:</strong> {{ detail.status || 'Unknown' }}</p>
+
+        @if (data.type === 'movies' && detail.runtime) {
+          <p><strong>Runtime:</strong> {{ detail.runtime }} min</p>
+        }
+
+        @if (data.type === 'series') {
+          <p><strong>Seasons:</strong> {{ detail.number_of_seasons || 'N/A' }}</p>
+          <p><strong>Episodes:</strong> {{ detail.number_of_episodes || 'N/A' }}</p>
+        }
+
+        <p class="overview">
+          {{ detail.overview || 'No overview available.' }}
+        </p>
+      </div>
+    </div>
+  }
+</div>

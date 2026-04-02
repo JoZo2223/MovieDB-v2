@@ -1,0 +1,17 @@
+<div class="results-list">
+  @for (item of results; track item.id; let last = $last) {
+    <div class="result-wrapper">
+      <app-result-card
+        [item]="item"
+        [posterUrl]="getPosterUrl(item.poster_path)"
+        [title]="getDisplayTitle(item)"
+        [date]="getDisplayDate(item)"
+        (cardClick)="onItemSelected($event)">
+      </app-result-card>
+
+      @if (!last) {
+        <div class="result-divider"></div>
+      }
+    </div>
+  }
+</div>

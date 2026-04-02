@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="top-section">
+  <div class="header">
+    <app-header
+      [title]="'TMDB Search'"
+      [subtitle]="'Search movies and series'">
+    </app-header>
+
+    <app-tabs
+      [activeTab]="activeTab"
+      (tabChange)="setTab($event)">
+    </app-tabs>
+  </div>
+
+  <app-search-field
+    class="search"
+    [searchTerm]="searchTerm"
+    [placeholder]="'Search in ' + activeTab"
+    (searchTermChange)="searchTerm = $event; onSearchChange()">
+  </app-search-field>
+</div>
+
+  <div class="results">
+    <div class="results-header">
+      <h2>{{ activeTab | titlecase }} Results</h2>
+
+      @if (!isLoading && !errorMessage && results.length > 0) {
+        <span class="results-count">{{ results.length }} results</span>
+      }
+    </div>
+
+    @if (isLoading) {
+      <p class="info-message">Loading...</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (results.length > 0) {
+  <app-results-list
+    [results]="results"
+    (itemSelected)="openDetails($event)">
+  </app-results-list>
+
+  <div #loadMoreTrigger class="load-more-trigger"></div>
+
+  @if (isLoadingMore) {
+    <p class="info-message">Loading more...</p>
+  }
+
+  @if (!hasMoreResults) {
+    <p class="info-message">No more results.</p>
+  }
+}
+
+    @if (!isLoading && !errorMessage && results.length === 0) {
+      <p class="info-message">No results found.</p>
+    }
+  </div>
+</div>
