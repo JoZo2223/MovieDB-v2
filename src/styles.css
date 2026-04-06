@@ -4,8 +4,8 @@
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
   font-family: Arial, sans-serif;
+  overflow: visible;
 }
 
 .header {
@@ -38,6 +38,7 @@
   padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .content {
@@ -65,10 +66,6 @@
 .custom-dialog .mat-mdc-dialog-container {
   padding: 0;
   border-radius: 16px;
-  overflow: hidden;
-}
-
-.custom-dialog .mat-mdc-dialog-container {
   overflow: hidden;
 }
 

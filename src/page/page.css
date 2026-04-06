@@ -17,15 +17,37 @@ body,
   margin: 40px auto;
   padding: 24px;
   background: #ffffff;
+  overflow: visible;
+}
+
+.sticky-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.top-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   flex-wrap: wrap;
+}
+
+.search {
+  display: block;
+  width: 100%;
 }
 
 h1 {
@@ -202,6 +224,11 @@ h1 {
   border: 1px solid #fecaca;
 }
 
+.load-more-trigger {
+  width: 100%;
+  height: 20px;
+}
+
 @media (max-width: 768px) {
   .container {
     margin: 20px auto;
@@ -210,7 +237,6 @@ h1 {
 
   .result-card {
     grid-template-columns: 1fr;
-    cursor: pointer;
   }
 
   .poster {
@@ -224,26 +250,7 @@ h1 {
     margin-left: 0;
   }
 
-  .load-more-trigger {
-  width: 100%;
-  height: 20px;
-  background: red;
-}
-
-.top-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-}
-
-.search {
-  width: 100%;
-}
-
+  .header {
+    align-items: stretch;
+  }
 }
