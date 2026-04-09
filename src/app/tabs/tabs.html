@@ -2,14 +2,16 @@
   <button
     class="tab-button"
     [class.active]="activeTab === 'movies'"
-    (click)="selectTab('movies')">
-    Movies
+    (click)="selectTab('movies')"
+  >
+    {{ 'TABS.MOVIES' | translate }}
   </button>
 
   <button
     class="tab-button"
     [class.active]="activeTab === 'series'"
-    (click)="selectTab('series')">
-    Series
+    (click)="selectTab('series')"
+  >
+    {{ 'TABS.SERIES' | translate }}
   </button>
 </div>

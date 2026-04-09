@@ -26,6 +26,8 @@ import { SearchFieldComponent } from '../app/search-field/search-field';
 import { ResultsListComponent } from '../app/result-list/result-list';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ResultDetailsDialog } from '../app/result-details-dialog/result-details-dialog'
+import { LanguageSwitcherComponent } from '../app/language-switcher/language-switcher';
+import { TranslatePipe } from '@ngx-translate/core';
 
 type TabType = 'movies' | 'series';
 
@@ -40,7 +42,7 @@ type TmdbResponse = {
   selector: 'app-search-page',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe, HeaderComponent, TabsComponent, SearchFieldComponent, ResultsListComponent,
-  MatDialogModule],
+  MatDialogModule, LanguageSwitcherComponent, TranslatePipe],
   templateUrl: './page.html',
   styleUrl: './page.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -224,4 +226,8 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
   getPosterUrl(path: string | null): string {
     return this.client.getPosterUrl(path);
   }
+
+  onLanguageChange(lang: string) {
+  console.log('Selected language:', lang);
+}
 }

@@ -1,62 +1,76 @@
 <div class="container">
   <div class="sticky-wrapper">
-    <div class="header">
-      <app-header
-        [title]="'TMDB Search'"
-        [subtitle]="'Search movies and series'">
-      </app-header>
+    <div class="top-row">
+      <div class="header">
+        <app-header
+          [title]="'HEADER.TITLE' | translate"
+          [subtitle]="'HEADER.SUBTITLE' | translate">
+        </app-header>
 
-      <app-tabs
-        [activeTab]="activeTab"
-        (tabChange)="setTab($event)">
-      </app-tabs>
+        <div class="header-actions">
+          <app-language-switcher
+            (languageChange)="onLanguageChange($event)">
+          </app-language-switcher>
+
+          <app-tabs
+            [activeTab]="activeTab"
+            (tabChange)="setTab($event)">
+          </app-tabs>
+        </div>
+      </div>
+
+      <app-search-field
+        class="search"
+        [searchTerm]="searchTerm"
+        [placeholder]="(activeTab === 'movies' ? 'SEARCH.MOVIES' : 'SEARCH.SERIES') | translate"
+        (searchTermChange)="searchTerm = $event; onSearchChange()">
+      </app-search-field>
     </div>
-
-    <app-search-field
-      class="search"
-      [searchTerm]="searchTerm"
-      [placeholder]="'Search in ' + activeTab"
-      (searchTermChange)="searchTerm = $event; onSearchChange()">
-    </app-search-field>
-
   </div>
 
-  <div class="results">
+  <div class="results" #resultsContainer>
     <div class="results-header">
-      <h2>{{ activeTab | titlecase }} Results</h2>
+      <h2>
+        {{
+          (activeTab === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES')
+            | translate
+        }}
+      </h2>
 
       @if (!isLoading && !errorMessage && results.length > 0) {
-        <span class="results-count">{{ results.length }} results</span>
+        <span class="results-count">
+          {{ 'RESULTS.COUNT' | translate:{ count: results.length } }}
+        </span>
       }
     </div>
 
     @if (isLoading) {
-      <p class="info-message">Loading...</p>
+      <p class="info-message">{{ 'RESULTS.LOADING' | translate }}</p>
     }
 
     @if (errorMessage) {
-      <p class="error-message">{{ errorMessage }}</p>
+      <p class="error-message">{{ 'RESULTS.ERROR' | translate }}</p>
     }
 
     @if (results.length > 0) {
-  <app-results-list
-    [results]="results"
-    (itemSelected)="openDetails($event)">
-  </app-results-list>
+      <app-results-list
+        [results]="results"
+        (itemSelected)="openDetails($event)">
+      </app-results-list>
 
-  <div #loadMoreTrigger class="load-more-trigger"></div>
+      <div #loadMoreTrigger class="load-more-trigger"></div>
 
-  @if (isLoadingMore) {
-    <p class="info-message">Loading more...</p>
-  }
+      @if (isLoadingMore) {
+        <p class="info-message">{{ 'RESULTS.LOADING_MORE' | translate }}</p>
+      }
 
-  @if (!hasMoreResults) {
-    <p class="info-message">No more results.</p>
-  }
-}
+      @if (!hasMoreResults) {
+        <p class="info-message">{{ 'RESULTS.NO_MORE' | translate }}</p>
+      }
+    }
 
     @if (!isLoading && !errorMessage && results.length === 0) {
-      <p class="info-message">No results found.</p>
+      <p class="info-message">{{ 'RESULTS.NO_RESULTS' | translate }}</p>
     }
   </div>
 </div>
