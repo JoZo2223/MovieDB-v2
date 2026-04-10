@@ -11,10 +11,7 @@
     @if (isOpen) {
       <div class="menu">
         @for (lang of store.languages; track lang.code) {
-          <div
-            class="option"
-            (click)="setLanguage(lang, $event)"
-          >
+          <div class="option" (click)="setLanguage(lang, $event)">
             <img [src]="lang.flag" class="flag" />
             {{ lang.label }}
           </div>

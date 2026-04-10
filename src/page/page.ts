@@ -1,31 +1,24 @@
 import {
   Component,
   OnInit,
-  AfterViewInit,
   OnDestroy,
   inject,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   ElementRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import {
-  Subject,
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  finalize
-} from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, filter, finalize } from 'rxjs';
 import { TmdbItem, ClientService } from '../service/clientService';
 import { HeaderComponent } from '../header/header';
 import { TabsComponent } from '../app/tabs/tabs';
 import { SearchFieldComponent } from '../app/search-field/search-field';
 import { ResultsListComponent } from '../app/result-list/result-list';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ResultDetailsDialog } from '../app/result-details-dialog/result-details-dialog'
+import { ResultDetailsDialog } from '../app/result-details-dialog/result-details-dialog';
 import { LanguageSwitcherComponent } from '../app/language-switcher/language-switcher';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LanguageStore } from '../app/store/language-store';
@@ -42,11 +35,22 @@ type TmdbResponse = {
 @Component({
   selector: 'app-search-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe, HeaderComponent, TabsComponent, SearchFieldComponent, ResultsListComponent,
-  MatDialogModule, LanguageSwitcherComponent, TranslatePipe ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    TitleCasePipe,
+    HeaderComponent,
+    TabsComponent,
+    SearchFieldComponent,
+    ResultsListComponent,
+    MatDialogModule,
+    LanguageSwitcherComponent,
+    TranslatePipe,
+  ],
   templateUrl: './page.html',
   styleUrl: './page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchPageComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
@@ -60,14 +64,14 @@ export class SearchPageComponent implements OnInit, OnDestroy {
   private observer?: IntersectionObserver;
   private loadMoreTrigger?: ElementRef<HTMLDivElement>;
 
-@ViewChild('loadMoreTrigger')
-set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
-  this.loadMoreTrigger = element;
+  @ViewChild('loadMoreTrigger')
+  set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
+    this.loadMoreTrigger = element;
 
-  if (element) {
-    this.setupIntersectionObserver();
+    if (element) {
+      this.setupIntersectionObserver();
+    }
   }
-}
 
   activeTab: TabType = 'movies';
   searchTerm = '';
@@ -84,13 +88,15 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
   ngOnInit(): void {
     this.setTabFromRoute();
 
-    this.searchSubject.pipe(
-      debounceTime(400),
-      distinctUntilChanged(),
-      filter(term => term.trim().length >= 3 || term.trim().length === 0)
-    ).subscribe(() => {
-      this.resetAndLoadFirstPage();
-    });
+    this.searchSubject
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        filter((term) => term.trim().length >= 3 || term.trim().length === 0),
+      )
+      .subscribe(() => {
+        this.resetAndLoadFirstPage();
+      });
 
     this.resetAndLoadFirstPage();
   }
@@ -108,16 +114,16 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
   }
 
   openDetails(item: TmdbItem): void {
-  this.dialog.open(ResultDetailsDialog, {
-    data: {
-      id: item.id,
-      type: this.activeTab
-    },
-    width: '900px',
-    maxWidth: '95vw',
-    autoFocus: false
-  });
-}
+    this.dialog.open(ResultDetailsDialog, {
+      data: {
+        id: item.id,
+        type: this.activeTab,
+      },
+      width: '900px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
+  }
 
   private resetAndLoadFirstPage(): void {
     this.currentPage = 1;
@@ -153,7 +159,7 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
           this.isLoading = false;
           this.isLoadingMore = false;
           this.cdr.markForCheck();
-        })
+        }),
       )
       .subscribe({
         next: (response: TmdbResponse) => {
@@ -163,9 +169,7 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
           this.totalPages = response.total_pages;
           this.hasMoreResults = this.currentPage < this.totalPages;
 
-          this.results = append
-            ? [...this.results, ...newItems]
-            : newItems;
+          this.results = append ? [...this.results, ...newItems] : newItems;
 
           this.cdr.markForCheck();
         },
@@ -176,35 +180,35 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
             this.results = [];
           }
           this.cdr.markForCheck();
-        }
+        },
       });
   }
 
   private setupIntersectionObserver(): void {
-  if (!this.loadMoreTrigger?.nativeElement) {
-    return;
-  }
-
-  this.observer?.disconnect();
-
-  this.observer = new IntersectionObserver(
-    (entries) => {
-      const entry = entries[0];
-
-      if (entry?.isIntersecting) {
-        console.log('loadMoreTrigger intersected');
-        this.loadNextPage();
-      }
-    },
-    {
-      root: null,
-      rootMargin: '300px',
-      threshold: 0
+    if (!this.loadMoreTrigger?.nativeElement) {
+      return;
     }
-  );
 
-  this.observer.observe(this.loadMoreTrigger.nativeElement);
-}
+    this.observer?.disconnect();
+
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+
+        if (entry?.isIntersecting) {
+          console.log('loadMoreTrigger intersected');
+          this.loadNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '300px',
+        threshold: 0,
+      },
+    );
+
+    this.observer.observe(this.loadMoreTrigger.nativeElement);
+  }
 
   private setTabFromRoute(): void {
     const path = this.route.snapshot.routeConfig?.path;
@@ -213,9 +217,10 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
 
   private getRequest(term: string, page: number) {
     const language = this.languageStore.selectedTmdbLanguage();
+
     return this.activeTab === 'movies'
-      ? this.client.getMovies(term, page)
-      : this.client.getSeries(term, page);
+      ? this.client.getMovies(term, page, language)
+      : this.client.getSeries(term, page, language);
   }
 
   getDisplayTitle(item: TmdbItem): string {
@@ -230,7 +235,8 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
     return this.client.getPosterUrl(path);
   }
 
-  onLanguageChange(lang: string) {
-  console.log('Selected language:', lang);
-}
+  onLanguageChange(lang: string): void {
+    console.log('Selected language:', lang);
+    this.resetAndLoadFirstPage();
+  }
 }

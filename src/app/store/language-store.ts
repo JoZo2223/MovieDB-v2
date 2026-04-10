@@ -9,7 +9,7 @@ export type Language = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LanguageStore {
   private readonly storageKey = 'selectedLanguage';
@@ -20,15 +20,15 @@ export class LanguageStore {
     { code: 'en', tmdbCode: 'en-US', label: 'EN', flag: '/assets/flags/gb.png' },
     { code: 'de', tmdbCode: 'de-DE', label: 'DE', flag: '/assets/flags/de.png' },
     { code: 'fr', tmdbCode: 'fr-FR', label: 'FR', flag: '/assets/flags/fr.png' },
-    { code: 'es', tmdbCode: 'es-ES', label: 'ES', flag: '/assets/flags/es.png' }
+    { code: 'es', tmdbCode: 'es-ES', label: 'ES', flag: '/assets/flags/es.png' },
   ];
 
   private readonly selectedCode = signal<Language['code']>(
-    (localStorage.getItem(this.storageKey) as Language['code']) || 'en'
+    (localStorage.getItem(this.storageKey) as Language['code']) || 'en',
   );
 
-  readonly selected = computed(() =>
-    this.languages.find(l => l.code === this.selectedCode()) ?? this.languages[1]
+  readonly selected = computed(
+    () => this.languages.find((l) => l.code === this.selectedCode()) ?? this.languages[1],
   );
 
   readonly selectedTmdbLanguage = computed(() => this.selected().tmdbCode);

@@ -7,7 +7,7 @@ import { ResultCardComponent } from '../result-card/result-card';
   standalone: true,
   imports: [ResultCardComponent],
   templateUrl: './result-list.html',
-  styleUrl: './result-list.css'
+  styleUrl: './result-list.css',
 })
 export class ResultsListComponent {
   @Input({ required: true }) results: TmdbItem[] = [];
@@ -29,4 +29,6 @@ export class ResultsListComponent {
   getDisplayDate(item: TmdbItem): string {
     return item.release_date || item.first_air_date || 'Unknown date';
   }
+
+  
 }

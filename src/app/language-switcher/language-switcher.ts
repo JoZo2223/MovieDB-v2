@@ -7,7 +7,7 @@ import { LanguageStore, Language } from '../store/language-store';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './language-switcher.html',
-  styleUrl: './language-switcher.css'
+  styleUrl: './language-switcher.css',
 })
 export class LanguageSwitcherComponent {
   readonly store = inject(LanguageStore);

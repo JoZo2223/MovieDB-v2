@@ -8,7 +8,7 @@ type TabType = 'movies' | 'series';
   standalone: true,
   imports: [TranslatePipe],
   templateUrl: './tabs.html',
-  styleUrl: './tabs.css'
+  styleUrl: './tabs.css',
 })
 export class TabsComponent {
   @Input() activeTab: TabType = 'movies';

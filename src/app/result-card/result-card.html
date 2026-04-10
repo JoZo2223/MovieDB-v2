@@ -1,21 +1,22 @@
 <div
   class="result-card"
-  role="button"
-  tabindex="0"
   (click)="onClick()"
-  (keydown)="onKeydown($event)">
+  (keydown)="onKeydown($event)"
+  (mouseenter)="onHover()"
+  tabindex="0"
+>
+  <img
+    *ngIf="posterUrl; else placeholder"
+    [src]="posterUrl"
+    class="poster"
+  />
 
-  @if (item.poster_path) {
-    <img
-      [src]="posterUrl"
-      [alt]="title"
-      class="poster" />
-  } @else {
+  <ng-template #placeholder>
     <div class="poster placeholder">No image</div>
-  }
+  </ng-template>
 
   <div class="overlay">
     <h3>{{ title }}</h3>
-    <p>{{ item.overview || 'No overview available.' }}</p>
+    <p>{{ overview }}</p>
   </div>
 </div>

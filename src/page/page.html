@@ -2,20 +2,14 @@
   <div class="sticky-wrapper">
     <div class="top-row">
       <div class="header">
-        <app-header
-          [title]="'HEADER.TITLE' | translate"
-          [subtitle]="'HEADER.SUBTITLE' | translate">
+        <app-header [title]="'HEADER.TITLE' | translate" [subtitle]="'HEADER.SUBTITLE' | translate">
         </app-header>
 
         <div class="header-actions">
-          <app-language-switcher
-            (languageChange)="onLanguageChange($event)">
+          <app-language-switcher (languageChange)="onLanguageChange($event)">
           </app-language-switcher>
 
-          <app-tabs
-            [activeTab]="activeTab"
-            (tabChange)="setTab($event)">
-          </app-tabs>
+          <app-tabs [activeTab]="activeTab" (tabChange)="setTab($event)"> </app-tabs>
         </div>
       </div>
 
@@ -23,7 +17,8 @@
         class="search"
         [searchTerm]="searchTerm"
         [placeholder]="(activeTab === 'movies' ? 'SEARCH.MOVIES' : 'SEARCH.SERIES') | translate"
-        (searchTermChange)="searchTerm = $event; onSearchChange()">
+        (searchTermChange)="searchTerm = $event; onSearchChange()"
+      >
       </app-search-field>
     </div>
   </div>
@@ -31,15 +26,12 @@
   <div class="results" #resultsContainer>
     <div class="results-header">
       <h2>
-        {{
-          (activeTab === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES')
-            | translate
-        }}
+        {{ (activeTab === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES') | translate }}
       </h2>
 
       @if (!isLoading && !errorMessage && results.length > 0) {
         <span class="results-count">
-          {{ 'RESULTS.COUNT' | translate:{ count: results.length } }}
+          {{ 'RESULTS.COUNT' | translate: { count: results.length } }}
         </span>
       }
     </div>
@@ -53,9 +45,7 @@
     }
 
     @if (results.length > 0) {
-      <app-results-list
-        [results]="results"
-        (itemSelected)="openDetails($event)">
+      <app-results-list [results]="results" (itemSelected)="openDetails($event)">
       </app-results-list>
 
       <div #loadMoreTrigger class="load-more-trigger"></div>

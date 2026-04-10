@@ -5,5 +5,5 @@ export const routes: Routes = [
   { path: '', redirectTo: 'movies', pathMatch: 'full' },
   { path: 'movies', component: SearchPageComponent },
   { path: 'series', component: SearchPageComponent },
-  { path: '**', redirectTo: 'movies' }
+  { path: '**', redirectTo: 'movies' },
 ];
