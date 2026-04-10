@@ -28,6 +28,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ResultDetailsDialog } from '../app/result-details-dialog/result-details-dialog'
 import { LanguageSwitcherComponent } from '../app/language-switcher/language-switcher';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageStore } from '../app/store/language-store';
 
 type TabType = 'movies' | 'series';
 
@@ -42,7 +43,7 @@ type TmdbResponse = {
   selector: 'app-search-page',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, TitleCasePipe, HeaderComponent, TabsComponent, SearchFieldComponent, ResultsListComponent,
-  MatDialogModule, LanguageSwitcherComponent, TranslatePipe],
+  MatDialogModule, LanguageSwitcherComponent, TranslatePipe ],
   templateUrl: './page.html',
   styleUrl: './page.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -54,9 +55,10 @@ export class SearchPageComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private searchSubject = new Subject<string>();
+  private languageStore = inject(LanguageStore);
 
   private observer?: IntersectionObserver;
-private loadMoreTrigger?: ElementRef<HTMLDivElement>;
+  private loadMoreTrigger?: ElementRef<HTMLDivElement>;
 
 @ViewChild('loadMoreTrigger')
 set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
@@ -210,6 +212,7 @@ set loadMoreTriggerSetter(element: ElementRef<HTMLDivElement> | undefined) {
   }
 
   private getRequest(term: string, page: number) {
+    const language = this.languageStore.selectedTmdbLanguage();
     return this.activeTab === 'movies'
       ? this.client.getMovies(term, page)
       : this.client.getSeries(term, page);

@@ -1,0 +1,24 @@
+{
+  "HEADER": {
+    "TITLE": "Búsqueda TMDB",
+    "SUBTITLE": "Buscar películas y series"
+  },
+  "SEARCH": {
+    "MOVIES": "Buscar en películas",
+    "SERIES": "Buscar en series"
+  },
+  "RESULTS": {
+    "MOVIES": "Resultados de películas",
+    "SERIES": "Resultados de series",
+    "COUNT": "{{count}} resultados",
+    "LOADING": "Cargando...",
+    "LOADING_MORE": "Cargando más...",
+    "NO_MORE": "No hay más resultados.",
+    "NO_RESULTS": "No se encontraron resultados.",
+    "ERROR": "Error al cargar datos de TMDB."
+  },
+  "TABS": {
+    "MOVIES": "Películas",
+    "SERIES": "Series"
+  }
+}

@@ -43,6 +43,27 @@ export interface TmdbResponse {
   total_results: number;
 }
 
+export interface TmdbTranslationData {
+  title?: string;
+  name?: string;
+  overview?: string;
+  homepage?: string;
+  tagline?: string;
+}
+
+export interface TmdbTranslation {
+  iso_3166_1: string;
+  iso_639_1: string;
+  name: string;
+  english_name: string;
+  data: TmdbTranslationData;
+}
+
+export interface TmdbTranslationsResponse {
+  id: number;
+  translations: TmdbTranslation[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,18 +81,18 @@ export class ClientService {
     return httpParams;
   }
 
-  getMovies(query: string, page: number = 1): Observable<TmdbResponse> {
+  getMovies(query: string, page: number = 1, language: string = 'en-US'): Observable<TmdbResponse> {
     const trimmedQuery = query.trim();
     const endpoint = trimmedQuery ? '/search/movie' : '/discover/movie';
 
     const params = trimmedQuery
       ? this.createParams({
           query: trimmedQuery,
-          language: 'en-US',
+          language,
           page: String(page)
         })
       : this.createParams({
-          language: 'en-US',
+          language,
           page: String(page),
           sort_by: 'popularity.desc'
         });
@@ -81,18 +102,18 @@ export class ClientService {
     );
   }
 
-  getSeries(query: string, page: number = 1): Observable<TmdbResponse> {
+  getSeries(query: string, page: number = 1, language: string = 'en-US'): Observable<TmdbResponse> {
     const trimmedQuery = query.trim();
     const endpoint = trimmedQuery ? '/search/tv' : '/discover/tv';
 
     const params = trimmedQuery
       ? this.createParams({
           query: trimmedQuery,
-          language: 'en-US',
+          language,
           page: String(page)
         })
       : this.createParams({
-          language: 'en-US',
+          language,
           page: String(page),
           sort_by: 'popularity.desc'
         });
@@ -102,23 +123,55 @@ export class ClientService {
     );
   }
 
-  getMovieDetails(id: number): Observable<TmdbDetail> {
-    const params = this.createParams({
-      language: 'en-US'
-    });
+  getMovieDetails(
+  id: number,
+  language: string = 'en-US',
+  includeTranslations: boolean = false
+): Observable<TmdbDetail & { translations?: TmdbTranslationsResponse }> {
+  const params = this.createParams({
+    language,
+    ...(includeTranslations ? { append_to_response: 'translations' } : {})
+  });
 
-    return this.http.get<TmdbDetail>(`${this.baseUrl}/movie/${id}`, { params }).pipe(
-      tap(response => console.log('Movie detail response:', response))
+  return this.http.get<TmdbDetail & { translations?: TmdbTranslationsResponse }>(
+    `${this.baseUrl}/movie/${id}`,
+    { params }
+  ).pipe(
+    tap(response => console.log('Movie detail response:', response))
+  );
+}
+
+getSeriesDetails(
+  id: number,
+  language: string = 'en-US',
+  includeTranslations: boolean = false
+): Observable<TmdbDetail & { translations?: TmdbTranslationsResponse }> {
+  const params = this.createParams({
+    language,
+    ...(includeTranslations ? { append_to_response: 'translations' } : {})
+  });
+
+  return this.http.get<TmdbDetail & { translations?: TmdbTranslationsResponse }>(
+    `${this.baseUrl}/tv/${id}`,
+    { params }
+  ).pipe(
+    tap(response => console.log('Series detail response:', response))
+  );
+}
+
+  getMovieTranslations(id: number): Observable<TmdbTranslationsResponse> {
+    const params = this.createParams({});
+
+    return this.http.get<TmdbTranslationsResponse>(`${this.baseUrl}/movie/${id}/translations`, { params }).pipe(
+      tap(response => console.log('Movie translations response:', response))
     );
   }
 
-  getSeriesDetails(id: number): Observable<TmdbDetail> {
-    const params = this.createParams({
-      language: 'en-US'
-    });
+  getSeriesTranslations(id: number): Observable<TmdbTranslationsResponse> {
+    const params = this.createParams({});
 
-    return this.http.get<TmdbDetail>(`${this.baseUrl}/tv/${id}`, { params }).pipe(
-      tap(response => console.log('Series detail response:', response))
+    return this.http.get<TmdbTranslationsResponse>(`${this.baseUrl}/tv/${id}/translations`, { params }).pipe(
+      tap(response => console.log('Series translations response:', response))
     );
   }
 

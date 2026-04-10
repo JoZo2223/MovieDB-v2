@@ -2,11 +2,16 @@ import { Component, Inject, OnInit, inject, ChangeDetectorRef } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
-import { ClientService, TmdbDetail } from '../../service/clientService';
+import { ClientService, TmdbDetail, TmdbTranslationsResponse } from '../../service/clientService';
+import { LanguageStore } from '../store/language-store';
 
 type DetailDialogData = {
   id: number;
   type: 'movies' | 'series';
+};
+
+type TmdbDetailWithTranslations = TmdbDetail & {
+  translations?: TmdbTranslationsResponse;
 };
 
 @Component({
@@ -20,8 +25,9 @@ export class ResultDetailsDialog implements OnInit {
   private client = inject(ClientService);
   private dialogRef = inject(MatDialogRef<ResultDetailsDialog>);
   private cdr = inject(ChangeDetectorRef);
+  private languageStore = inject(LanguageStore);
 
-  detail?: TmdbDetail;
+  detail?: TmdbDetailWithTranslations;
   isLoading = true;
   errorMessage = '';
 
@@ -34,9 +40,11 @@ export class ResultDetailsDialog implements OnInit {
   }
 
   private loadDetails(): void {
+    const tmdbLanguage = this.languageStore.selected().tmdbCode;
+
     const request$ = this.data.type === 'movies'
-      ? this.client.getMovieDetails(this.data.id)
-      : this.client.getSeriesDetails(this.data.id);
+      ? this.client.getMovieDetails(this.data.id, tmdbLanguage, true)
+      : this.client.getSeriesDetails(this.data.id, tmdbLanguage, true);
 
     request$
       .pipe(
@@ -48,6 +56,7 @@ export class ResultDetailsDialog implements OnInit {
       .subscribe({
         next: (response) => {
           this.detail = response;
+          this.applyTranslationFallback();
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -56,6 +65,49 @@ export class ResultDetailsDialog implements OnInit {
           this.cdr.detectChanges();
         }
       });
+  }
+
+  private applyTranslationFallback(): void {
+    if (!this.detail) {
+      return;
+    }
+
+    if (this.detail.overview?.trim()) {
+      return;
+    }
+
+    const selectedLanguage = this.languageStore.selected();
+    const [iso639, iso3166] = selectedLanguage.tmdbCode.split('-');
+
+    const translations = this.detail.translations?.translations ?? [];
+
+    const exactMatch = translations.find(
+      translation =>
+        translation.iso_639_1?.toLowerCase() === iso639.toLowerCase() &&
+        translation.iso_3166_1?.toUpperCase() === iso3166.toUpperCase() &&
+        translation.data?.overview?.trim()
+    );
+
+    if (exactMatch?.data?.overview) {
+      this.detail = {
+        ...this.detail,
+        overview: exactMatch.data.overview
+      };
+      return;
+    }
+
+    const languageOnlyMatch = translations.find(
+      translation =>
+        translation.iso_639_1?.toLowerCase() === selectedLanguage.code.toLowerCase() &&
+        translation.data?.overview?.trim()
+    );
+
+    if (languageOnlyMatch?.data?.overview) {
+      this.detail = {
+        ...this.detail,
+        overview: languageOnlyMatch.data.overview
+      };
+    }
   }
 
   close(): void {
