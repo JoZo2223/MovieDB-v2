@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, computed, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageStore, Language } from '../store/language-store';
+import { AppLanguageCode } from '../../assets/translations/translations';
 
 @Component({
   selector: 'app-language-switcher',
@@ -11,19 +12,18 @@ import { LanguageStore, Language } from '../store/language-store';
 })
 export class LanguageSwitcherComponent {
   readonly store = inject(LanguageStore);
-
-  isOpen = false;
-
-  @Output() languageChange = new EventEmitter<string>();
+  readonly languageChange = output<AppLanguageCode>();
+  readonly isOpen = signal(false);
+  readonly availableLanguages = computed(() => this.store.languages);
 
   toggleDropdown(): void {
-    this.isOpen = !this.isOpen;
+    this.isOpen.update((value) => !value);
   }
 
-  setLanguage(lang: Language, event: Event): void {
+  setLanguage(language: Language, event: Event): void {
     event.stopPropagation();
-    this.store.setLanguage(lang.code);
-    this.isOpen = false;
-    this.languageChange.emit(lang.code);
+    this.store.setLanguage(language.code);
+    this.isOpen.set(false);
+    this.languageChange.emit(language.code);
   }
 }

@@ -2,17 +2,17 @@
   <div class="dropdown" (click)="toggleDropdown()">
     <div class="selected">
       <span class="selected-label">
-        <img [src]="store.selected().flag" class="flag" />
+        <img [src]="store.selected().flag" class="flag" [alt]="store.selected().label" />
         {{ store.selected().label }}
       </span>
       <span class="arrow">▼</span>
     </div>
 
-    @if (isOpen) {
+    @if (isOpen()) {
       <div class="menu">
-        @for (lang of store.languages; track lang.code) {
+        @for (lang of availableLanguages(); track lang.code) {
           <div class="option" (click)="setLanguage(lang, $event)">
-            <img [src]="lang.flag" class="flag" />
+            <img [src]="lang.flag" class="flag" [alt]="lang.label" />
             {{ lang.label }}
           </div>
         }

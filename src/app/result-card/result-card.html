@@ -5,18 +5,14 @@
   (mouseenter)="onHover()"
   tabindex="0"
 >
-  <img
-    *ngIf="posterUrl; else placeholder"
-    [src]="posterUrl"
-    class="poster"
-  />
-
-  <ng-template #placeholder>
-    <div class="poster placeholder">No image</div>
-  </ng-template>
+  @if (posterUrl()) {
+    <img [src]="posterUrl()" [alt]="title()" class="poster" />
+  } @else {
+    <div class="poster placeholder">{{ noImageLabel() }}</div>
+  }
 
   <div class="overlay">
-    <h3>{{ title }}</h3>
-    <p>{{ overview }}</p>
+    <h3>{{ title() }}</h3>
+    <p>{{ overview() }}</p>
   </div>
 </div>

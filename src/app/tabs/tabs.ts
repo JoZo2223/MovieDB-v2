@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
-type TabType = 'movies' | 'series';
+export type TabType = 'movies' | 'series';
 
 @Component({
   selector: 'app-tabs',

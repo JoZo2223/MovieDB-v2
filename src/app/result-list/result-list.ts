@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { TmdbItem } from '../../service/clientService';
 import { ResultCardComponent } from '../result-card/result-card';
+import { TabType } from '../tabs/tabs';
 
 @Component({
   selector: 'app-results-list',
@@ -10,25 +11,14 @@ import { ResultCardComponent } from '../result-card/result-card';
   styleUrl: './result-list.css',
 })
 export class ResultsListComponent {
-  @Input({ required: true }) results: TmdbItem[] = [];
-
-  @Output() itemSelected = new EventEmitter<TmdbItem>();
+  readonly results = input<TmdbItem[]>([]);
+  readonly activeTab = input<TabType>('movies');
+  readonly itemSelected = output<TmdbItem>();
+  readonly items = computed(() => this.results() ?? []);
 
   onItemSelected(item: TmdbItem): void {
     this.itemSelected.emit(item);
   }
 
-  getPosterUrl(path: string | null): string {
-    return path ? `https://image.tmdb.org/t/p/w500${path}` : '';
-  }
-
-  getDisplayTitle(item: TmdbItem): string {
-    return item.title || item.name || 'Untitled';
-  }
-
-  getDisplayDate(item: TmdbItem): string {
-    return item.release_date || item.first_air_date || 'Unknown date';
-  }
-
-  
+  trackById = (_index: number, item: TmdbItem): number => item.id;
 }

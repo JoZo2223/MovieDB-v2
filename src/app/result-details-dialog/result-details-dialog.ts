@@ -1,13 +1,15 @@
-import { Component, Inject, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { finalize } from 'rxjs';
 import { ClientService, TmdbDetail, TmdbTranslationsResponse } from '../../service/clientService';
 import { LanguageStore } from '../store/language-store';
+import { UtilsService } from '../../service/utilsService';
+import { AppTranslateService } from '../../service/translationService';
+import { TabType } from '../tabs/tabs';
 
 type DetailDialogData = {
   id: number;
-  type: 'movies' | 'series';
+  type: TabType;
 };
 
 type TmdbDetailWithTranslations = TmdbDetail & {
@@ -19,114 +21,80 @@ type TmdbDetailWithTranslations = TmdbDetail & {
   standalone: true,
   imports: [CommonModule, MatDialogModule],
   templateUrl: './result-details-dialog.html',
-  styleUrl: './result-details-dialog.css'
+  styleUrl: './result-details-dialog.css',
 })
-export class ResultDetailsDialog implements OnInit {
-  private client = inject(ClientService);
-  private dialogRef = inject(MatDialogRef<ResultDetailsDialog>);
-  private cdr = inject(ChangeDetectorRef);
-  private languageStore = inject(LanguageStore);
+export class ResultDetailsDialog {
+  private readonly client = inject(ClientService);
+  private readonly dialogRef = inject(MatDialogRef<ResultDetailsDialog>);
+  private readonly languageStore = inject(LanguageStore);
+  private readonly utils = inject(UtilsService);
+  private readonly translate = inject(AppTranslateService);
 
-  detail?: TmdbDetailWithTranslations;
-  isLoading = true;
-  errorMessage = '';
+  readonly detail = signal<TmdbDetailWithTranslations | undefined>(undefined);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DetailDialogData) {}
+  readonly title = computed(() =>
+    this.utils.getDisplayTitle(this.detail(), this.translate.text('detailsUntitled')),
+  );
+  readonly date = computed(() =>
+    this.utils.getDisplayDate(this.detail(), this.translate.text('detailsUnknownDate')),
+  );
+  readonly posterUrl = computed(() => this.utils.getPosterUrl(this.detail()?.poster_path ?? null));
+  readonly genreText = computed(
+    () => this.detail()?.genres?.map((genre) => genre.name).join(', ') || this.translate.text('detailsUnknown'),
+  );
 
-  ngOnInit(): void {
-    queueMicrotask(() => {
-      this.loadDetails();
-    });
+  readonly loadingLabel = computed(() => this.translate.text('detailsLoading'));
+  readonly releaseDateLabel = computed(() => this.translate.text('detailsReleaseDate'));
+  readonly ratingLabel = computed(() => this.translate.text('detailsRating'));
+  readonly genresLabel = computed(() => this.translate.text('detailsGenres'));
+  readonly statusLabel = computed(() => this.translate.text('detailsStatus'));
+  readonly runtimeLabel = computed(() => this.translate.text('detailsRuntime'));
+  readonly seasonsLabel = computed(() => this.translate.text('detailsSeasons'));
+  readonly episodesLabel = computed(() => this.translate.text('detailsEpisodes'));
+  readonly unknownLabel = computed(() => this.translate.text('detailsUnknown'));
+  readonly noImageLabel = computed(() => this.translate.text('detailsNoImage'));
+  readonly noOverviewLabel = computed(() => this.translate.text('detailsNoOverview'));
+
+  constructor(@Inject(MAT_DIALOG_DATA) public readonly data: DetailDialogData) {
+    queueMicrotask(() => this.loadDetails());
   }
 
   private loadDetails(): void {
-    const tmdbLanguage = this.languageStore.selected().tmdbCode;
+    const tmdbLanguage = this.languageStore.selectedTmdbLanguage();
+    const request =
+      this.data.type === 'movies'
+        ? this.client.getMovieDetails(this.data.id, tmdbLanguage, true)
+        : this.client.getSeriesDetails(this.data.id, tmdbLanguage, true);
 
-    const request$ = this.data.type === 'movies'
-      ? this.client.getMovieDetails(this.data.id, tmdbLanguage, true)
-      : this.client.getSeriesDetails(this.data.id, tmdbLanguage, true);
+    request.subscribe({
+      next: (response) => {
+        const overview =
+          response.overview ||
+          this.utils.getTranslatedOverview(
+            response.translations,
+            this.languageStore.selected().tmdbCode,
+            this.languageStore.selected().code,
+          );
 
-    request$
-      .pipe(
-        finalize(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.detail = response;
-          this.applyTranslationFallback();
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          console.error('Detail load error:', error);
-          this.errorMessage = 'Failed to load detail data.';
-          this.cdr.detectChanges();
-        }
-      });
-  }
-
-  private applyTranslationFallback(): void {
-    if (!this.detail) {
-      return;
-    }
-
-    if (this.detail.overview?.trim()) {
-      return;
-    }
-
-    const selectedLanguage = this.languageStore.selected();
-    const [iso639, iso3166] = selectedLanguage.tmdbCode.split('-');
-
-    const translations = this.detail.translations?.translations ?? [];
-
-    const exactMatch = translations.find(
-      translation =>
-        translation.iso_639_1?.toLowerCase() === iso639.toLowerCase() &&
-        translation.iso_3166_1?.toUpperCase() === iso3166.toUpperCase() &&
-        translation.data?.overview?.trim()
-    );
-
-    if (exactMatch?.data?.overview) {
-      this.detail = {
-        ...this.detail,
-        overview: exactMatch.data.overview
-      };
-      return;
-    }
-
-    const languageOnlyMatch = translations.find(
-      translation =>
-        translation.iso_639_1?.toLowerCase() === selectedLanguage.code.toLowerCase() &&
-        translation.data?.overview?.trim()
-    );
-
-    if (languageOnlyMatch?.data?.overview) {
-      this.detail = {
-        ...this.detail,
-        overview: languageOnlyMatch.data.overview
-      };
-    }
+        this.detail.set({
+          ...response,
+          overview,
+        });
+      },
+      error: (error) => {
+        console.error('Detail load error:', error);
+        this.errorMessage.set(this.translate.text('detailsError'));
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        this.isLoading.set(false);
+      },
+    });
   }
 
   close(): void {
     this.dialogRef.close();
-  }
-
-  get title(): string {
-    return this.detail?.title || this.detail?.name || 'Untitled';
-  }
-
-  get date(): string {
-    return this.detail?.release_date || this.detail?.first_air_date || 'Unknown date';
-  }
-
-  get posterUrl(): string {
-    return this.client.getPosterUrl(this.detail?.poster_path ?? null);
-  }
-
-  get genreText(): string {
-    return this.detail?.genres?.map(genre => genre.name).join(', ') || 'Unknown';
   }
 }
