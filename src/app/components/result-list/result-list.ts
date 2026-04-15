@@ -1,5 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
-import { TmdbItem } from '../../service/clientService';
+import { TmdbItem } from '../../../service/clientService';
 import { ResultCardComponent } from '../result-card/result-card';
 import { TabType } from '../tabs/tabs';
 
@@ -14,6 +14,7 @@ export class ResultsListComponent {
   readonly results = input<TmdbItem[]>([]);
   readonly activeTab = input<TabType>('movies');
   readonly itemSelected = output<TmdbItem>();
+
   readonly items = computed(() => this.results() ?? []);
 
   onItemSelected(item: TmdbItem): void {

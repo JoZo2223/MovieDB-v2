@@ -1,6 +1,6 @@
 import { Injectable, computed, inject } from '@angular/core';
-import { LanguageStore } from '../app/store/language-store';
-import { TRANSLATIONS, TranslationKey } from '../assets/translations/translations';
+import { LanguageStore } from '../app/languageStore/language-store';
+import { TRANSLATIONS, TranslationDictionary, TranslationKey } from '../app/i18n/translations';
 
 @Injectable({
   providedIn: 'root',
@@ -8,12 +8,14 @@ import { TRANSLATIONS, TranslationKey } from '../assets/translations/translation
 export class AppTranslateService {
   private readonly languageStore = inject(LanguageStore);
 
-  readonly currentLanguage = computed(() => this.languageStore.selected().code);
+  readonly currentLanguage = this.languageStore.selectedLanguageCode;
 
-  readonly dictionary = computed(() => TRANSLATIONS[this.currentLanguage()]);
+  readonly dictionary = computed<TranslationDictionary>(
+    () => TRANSLATIONS[this.currentLanguage()]
+  );
 
   text(key: TranslationKey, params?: Record<string, string | number>): string {
-    let value: string = this.dictionary()[key] ?? TRANSLATIONS.en[key];
+    let value = this.dictionary()[key] ?? TRANSLATIONS.en[key];
 
     if (!params) {
       return value;

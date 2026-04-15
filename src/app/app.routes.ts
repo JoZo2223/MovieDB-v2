@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { SearchPageComponent } from '../page/page';
+import { SearchPageComponent } from './components/page/page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'movies', pathMatch: 'full' },

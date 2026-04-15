@@ -1,0 +1,53 @@
+import { TranslationDictionary } from '../translations';
+
+export const de: TranslationDictionary = {
+  headerTitle: 'TMDB Suche',
+  headerSubtitle: 'Suche nach Filmen und Serien',
+  tabsMovies: 'Filme',
+  tabsSeries: 'Serien',
+  searchMovies: 'Filme suchen',
+  searchSeries: 'Serien suchen',
+
+  resultsMovies: 'Filmergebnisse',
+  resultsSeries: 'Serienergebnisse',
+  resultsLoading: 'Lädt...',
+  resultsLoadingMore: 'Weitere Ergebnisse werden geladen...',
+  resultsNoMore: 'Keine weiteren Ergebnisse.',
+  resultsNoResults: 'Keine Ergebnisse gefunden.',
+  resultsError: 'Ergebnisse konnten nicht geladen werden.',
+
+  loading: 'Lädt...',
+  noResults: 'Keine Ergebnisse gefunden.',
+  errorGeneric: 'Etwas ist schiefgelaufen.',
+  errorLoadMore: 'Weitere Ergebnisse konnten nicht geladen werden.',
+  resultCount: '{count} Ergebnisse',
+
+  resultUnknownTitle: 'Unbekannter Titel',
+  resultUnknownDate: 'Unbekanntes Datum',
+  resultNoImage: 'Kein Bild verfügbar',
+
+  detailsTitle: 'Details',
+  detailsUntitled: 'Ohne Titel',
+  detailsReleaseDate: 'Veröffentlichungsdatum',
+  detailsFirstAirDate: 'Erstausstrahlung',
+  detailsUnknownDate: 'Unbekanntes Datum',
+  detailsOverview: 'Beschreibung',
+  detailsNoOverview: 'Keine Beschreibung verfügbar.',
+  detailsOriginalLanguage: 'Originalsprache',
+  detailsPopularity: 'Popularität',
+  detailsVoteAverage: 'Durchschnittsbewertung',
+  detailsVoteCount: 'Anzahl Stimmen',
+  detailsRating: 'Bewertung',
+  detailsGenres: 'Genres',
+  detailsStatus: 'Status',
+  detailsRuntime: 'Laufzeit',
+  detailsSeasons: 'Staffeln',
+  detailsEpisodes: 'Episoden',
+  detailsUnknown: 'Unbekannt',
+  detailsNoImage: 'Kein Bild verfügbar',
+  detailsLoading: 'Details werden geladen...',
+  detailsError: 'Details konnten nicht geladen werden.',
+
+  close: 'Schließen',
+  language: 'Sprache',
+};

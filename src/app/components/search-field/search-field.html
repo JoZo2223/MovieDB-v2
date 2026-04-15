@@ -1,0 +1,8 @@
+<div class="search-box">
+  <input
+    #inputEl
+    type="text"
+    [value]="searchTerm()"
+    (input)="onValueChange(inputEl.value)"
+    [placeholder]="placeholder()" />
+</div>

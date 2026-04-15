@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="sticky-wrapper">
+    <div class="header">
+      <app-header
+        [title]="headerTitle()"
+        [subtitle]="headerSubtitle()">
+      </app-header>
+
+      <app-language-switcher></app-language-switcher>
+
+      <app-tabs
+        [activeTab]="activeTab()"
+        (tabChange)="setTab($event)">
+      </app-tabs>
+    </div>
+
+    <app-search-field
+      class="search"
+      [searchTerm]="searchTerm()"
+      [placeholder]="searchPlaceholder()"
+      (searchTermChange)="onSearchChange($event)">
+    </app-search-field>
+  </div>
+
+  <div class="results">
+    <div class="results-header">
+      <h2>{{ resultsTitle() }}</h2>
+
+      @if (!isLoading() && !errorMessage() && results().length > 0) {
+        <span class="results-count">
+          {{ resultCountLabel() }}
+        </span>
+      }
+    </div>
+
+    @if (isLoading()) {
+      <p class="info-message">{{ resultsLoadingLabel() }}</p>
+    }
+
+    @if (errorMessage()) {
+      <p class="error-message">{{ errorMessage() }}</p>
+    }
+
+    @if (!isLoading() && !errorMessage() && results().length > 0) {
+      <app-results-list
+        [results]="results()"
+        [activeTab]="activeTab()"
+        (itemSelected)="openDetails($event)">
+      </app-results-list>
+
+      @if (isLoadingMore()) {
+        <p class="info-message">{{ resultsLoadingMoreLabel() }}</p>
+      }
+
+      @if (!hasMoreResults()) {
+        <p class="info-message">{{ resultsNoMoreLabel() }}</p>
+      }
+    }
+
+    @if (!isLoading() && !errorMessage() && results().length === 0 && hasSearched()) {
+      <p class="info-message">{{ resultsNoResultsLabel() }}</p>
+    }
+
+    <div #loadMoreTrigger class="load-more-trigger"></div>
+  </div>
+</div>

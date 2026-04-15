@@ -1,0 +1,53 @@
+import { TranslationDictionary } from '../translations';
+
+export const fr: TranslationDictionary = {
+  headerTitle: 'Recherche TMDB',
+  headerSubtitle: 'Rechercher des films et des séries',
+  tabsMovies: 'Films',
+  tabsSeries: 'Séries',
+  searchMovies: 'Rechercher des films',
+  searchSeries: 'Rechercher des séries',
+
+  resultsMovies: 'Résultats des films',
+  resultsSeries: 'Résultats des séries',
+  resultsLoading: 'Chargement...',
+  resultsLoadingMore: 'Chargement de plus de résultats...',
+  resultsNoMore: 'Plus de résultats.',
+  resultsNoResults: 'Aucun résultat trouvé.',
+  resultsError: 'Impossible de charger les résultats.',
+
+  loading: 'Chargement...',
+  noResults: 'Aucun résultat trouvé.',
+  errorGeneric: 'Une erreur est survenue.',
+  errorLoadMore: 'Impossible de charger plus de résultats.',
+  resultCount: '{count} résultats',
+
+  resultUnknownTitle: 'Titre inconnu',
+  resultUnknownDate: 'Date inconnue',
+  resultNoImage: 'Aucune image disponible',
+
+  detailsTitle: 'Détails',
+  detailsUntitled: 'Sans titre',
+  detailsReleaseDate: 'Date de sortie',
+  detailsFirstAirDate: 'Date de première diffusion',
+  detailsUnknownDate: 'Date inconnue',
+  detailsOverview: 'Aperçu',
+  detailsNoOverview: 'Aucun aperçu disponible.',
+  detailsOriginalLanguage: 'Langue originale',
+  detailsPopularity: 'Popularité',
+  detailsVoteAverage: 'Note moyenne',
+  detailsVoteCount: 'Nombre de votes',
+  detailsRating: 'Note',
+  detailsGenres: 'Genres',
+  detailsStatus: 'Statut',
+  detailsRuntime: 'Durée',
+  detailsSeasons: 'Saisons',
+  detailsEpisodes: 'Épisodes',
+  detailsUnknown: 'Inconnu',
+  detailsNoImage: 'Aucune image disponible',
+  detailsLoading: 'Chargement des détails...',
+  detailsError: 'Impossible de charger les détails.',
+
+  close: 'Fermer',
+  language: 'Langue',
+};

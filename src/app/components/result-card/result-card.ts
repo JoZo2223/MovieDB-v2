@@ -1,8 +1,8 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { TmdbItem, ClientService, TmdbTranslationsResponse } from '../../service/clientService';
-import { LanguageStore } from '../store/language-store';
-import { UtilsService } from '../../service/utilsService';
-import { AppTranslateService } from '../../service/translationService';
+import { TmdbItem, ClientService, TmdbTranslationsResponse } from '../../../service/clientService';
+import { LanguageStore } from '../../languageStore/language-store';
+import { UtilsService } from '../../../service/utilsService';
+import { AppTranslateService } from '../../../service/translationService';
 import { TabType } from '../tabs/tabs';
 
 @Component({

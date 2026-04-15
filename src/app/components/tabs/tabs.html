@@ -1,0 +1,15 @@
+<div class="tabs">
+  <button
+    class="tab-button"
+    [class.active]="activeTab() === 'movies'"
+    (click)="selectTab('movies')">
+    {{ moviesLabel() }}
+  </button>
+
+  <button
+    class="tab-button"
+    [class.active]="activeTab() === 'series'"
+    (click)="selectTab('series')">
+    {{ seriesLabel() }}
+  </button>
+</div>

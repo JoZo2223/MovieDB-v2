@@ -1,10 +1,10 @@
 import { Component, Inject, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ClientService, TmdbDetail, TmdbTranslationsResponse } from '../../service/clientService';
-import { LanguageStore } from '../store/language-store';
-import { UtilsService } from '../../service/utilsService';
-import { AppTranslateService } from '../../service/translationService';
+import { ClientService, TmdbDetail, TmdbTranslationsResponse } from '../../../service/clientService';
+import { LanguageStore } from '../../languageStore/language-store';
+import { UtilsService } from '../../../service/utilsService';
+import { AppTranslateService } from '../../../service/translationService';
 import { TabType } from '../tabs/tabs';
 
 type DetailDialogData = {

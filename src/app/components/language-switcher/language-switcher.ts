@@ -1,7 +1,6 @@
-import { Component, computed, inject, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LanguageStore, Language } from '../store/language-store';
-import { AppLanguageCode } from '../../assets/translations/translations';
+import { LanguageStore, Language } from '../../languageStore/language-store';
 
 @Component({
   selector: 'app-language-switcher',
@@ -12,9 +11,9 @@ import { AppLanguageCode } from '../../assets/translations/translations';
 })
 export class LanguageSwitcherComponent {
   readonly store = inject(LanguageStore);
-  readonly languageChange = output<AppLanguageCode>();
   readonly isOpen = signal(false);
   readonly availableLanguages = computed(() => this.store.languages);
+  readonly selectedLanguage = this.store.selected;
 
   toggleDropdown(): void {
     this.isOpen.update((value) => !value);
@@ -24,6 +23,5 @@ export class LanguageSwitcherComponent {
     event.stopPropagation();
     this.store.setLanguage(language.code);
     this.isOpen.set(false);
-    this.languageChange.emit(language.code);
   }
 }
