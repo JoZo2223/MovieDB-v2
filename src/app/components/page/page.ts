@@ -23,6 +23,7 @@ import { SearchFieldComponent } from '../search-field/search-field';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher';
 import { ResultsListComponent } from '../result-list/result-list';
 import { ResultDetailsDialog } from '../result-details-dialog/result-details-dialog';
+import { InfoMessageComponent } from '../info-message/info-message';
 
 @Component({
   selector: 'app-search-page',
@@ -35,6 +36,7 @@ import { ResultDetailsDialog } from '../result-details-dialog/result-details-dia
     SearchFieldComponent,
     LanguageSwitcherComponent,
     ResultsListComponent,
+    InfoMessageComponent,
   ],
   templateUrl: './page.html',
   styleUrl: './page.css',
@@ -61,7 +63,26 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   readonly totalPages = signal(1);
   readonly hasSearched = signal(false);
 
+  readonly hasResults = computed(() => this.results().length > 0);
   readonly hasMoreResults = computed(() => this.currentPage() < this.totalPages());
+
+  readonly showLoading = computed(() => this.isLoading());
+  readonly showError = computed(() => !!this.errorMessage());
+  readonly showResultCount = computed(
+    () => !this.isLoading() && !this.errorMessage() && this.hasResults(),
+  );
+  readonly showResultsList = computed(
+    () => !this.isLoading() && !this.errorMessage() && this.hasResults(),
+  );
+  readonly showLoadingMore = computed(
+    () => this.showResultsList() && this.isLoadingMore(),
+  );
+  readonly showNoMoreResults = computed(
+    () => this.showResultsList() && !this.hasMoreResults(),
+  );
+  readonly showNoResults = computed(
+    () => !this.isLoading() && !this.errorMessage() && !this.hasResults() && this.hasSearched(),
+  );
 
   readonly headerTitle = computed(() => this.translate.text('headerTitle'));
   readonly headerSubtitle = computed(() => this.translate.text('headerSubtitle'));

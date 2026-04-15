@@ -26,39 +26,39 @@
     <div class="results-header">
       <h2>{{ resultsTitle() }}</h2>
 
-      @if (!isLoading() && !errorMessage() && results().length > 0) {
+      @if (showResultCount()) {
         <span class="results-count">
           {{ resultCountLabel() }}
         </span>
       }
     </div>
 
-    @if (isLoading()) {
-      <p class="info-message">{{ resultsLoadingLabel() }}</p>
+    @if (showLoading()) {
+      <app-info-message [text]="resultsLoadingLabel()" />
     }
 
-    @if (errorMessage()) {
-      <p class="error-message">{{ errorMessage() }}</p>
+    @if (showError()) {
+      <app-info-message [text]="errorMessage()" type="error" />
     }
 
-    @if (!isLoading() && !errorMessage() && results().length > 0) {
+    @if (showResultsList()) {
       <app-results-list
         [results]="results()"
         [activeTab]="activeTab()"
         (itemSelected)="openDetails($event)">
       </app-results-list>
 
-      @if (isLoadingMore()) {
-        <p class="info-message">{{ resultsLoadingMoreLabel() }}</p>
+      @if (showLoadingMore()) {
+        <app-info-message [text]="resultsLoadingMoreLabel()" />
       }
 
-      @if (!hasMoreResults()) {
-        <p class="info-message">{{ resultsNoMoreLabel() }}</p>
+      @if (showNoMoreResults()) {
+        <app-info-message [text]="resultsNoMoreLabel()" />
       }
     }
 
-    @if (!isLoading() && !errorMessage() && results().length === 0 && hasSearched()) {
-      <p class="info-message">{{ resultsNoResultsLabel() }}</p>
+    @if (showNoResults()) {
+      <app-info-message [text]="resultsNoResultsLabel()" />
     }
 
     <div #loadMoreTrigger class="load-more-trigger"></div>

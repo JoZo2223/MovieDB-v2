@@ -1,0 +1,19 @@
+<p [class]="type() + '-message'">
+  @if (type() === 'error') {
+    <span>❌</span>
+  }
+
+  @if (type() === 'info') {
+    <span>ℹ️</span>
+  }
+
+  @if (type() === 'success') {
+    <span>✅</span>
+  }
+
+  @if (type() === 'warning') {
+    <span>⚠️</span>
+  }
+
+  {{ text() }}
+</p>

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, shareReplay } from 'rxjs';
 import { environment } from '../../enviroment';
 
 export interface TmdbItem {
@@ -64,12 +64,20 @@ export interface TmdbTranslationsResponse {
   translations: TmdbTranslation[];
 }
 
+type CacheEntry<T> = {
+  expiresAt: number;
+  value$: Observable<T>;
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class ClientService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.tmdbBaseUrl;
+
+  private readonly cache = new Map<string, CacheEntry<unknown>>();
+  private readonly cacheTtlMs = 5 * 60 * 1000; 
 
   private createParams(params: Record<string, string>): HttpParams {
     let httpParams = new HttpParams().set('api_key', environment.tmdbToken);
@@ -79,6 +87,62 @@ export class ClientService {
     });
 
     return httpParams;
+  }
+
+  private getFromCache<T>(key: string): Observable<T> | null {
+    const entry = this.cache.get(key);
+
+    if (!entry) {
+      return null;
+    }
+
+    if (Date.now() > entry.expiresAt) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.value$ as Observable<T>;
+  }
+
+  private saveToCache<T>(key: string, request$: Observable<T>): Observable<T> {
+    const shared$ = request$.pipe(
+      shareReplay(1),
+    );
+
+    this.cache.set(key, {
+      expiresAt: Date.now() + this.cacheTtlMs,
+      value$: shared$,
+    });
+
+    return shared$;
+  }
+
+  private getOrCreateCache<T>(key: string, factory: () => Observable<T>): Observable<T> {
+    const cached = this.getFromCache<T>(key);
+
+    if (cached) {
+      return cached;
+    }
+
+    return this.saveToCache(key, factory());
+  }
+
+  private buildListCacheKey(
+    type: 'movie' | 'tv',
+    query: string,
+    page: number,
+    language: string,
+  ): string {
+    return `${type}|q=${query.trim()}|page=${page}|lang=${language}`;
+  }
+
+  private buildDetailCacheKey(
+    type: 'movie' | 'tv',
+    id: number,
+    language: string,
+    includeTranslations: boolean,
+  ): string {
+    return `${type}|id=${id}|lang=${language}|translations=${includeTranslations}`;
   }
 
   getMovies(
@@ -101,8 +165,12 @@ export class ClientService {
           sort_by: 'popularity.desc',
         });
 
-    return this.http.get<TmdbResponse>(`${this.baseUrl}${endpoint}`, { params }).pipe(
-      tap((response) => console.log('Movies response:', response)),
+    const cacheKey = this.buildListCacheKey('movie', trimmedQuery, page, language);
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http.get<TmdbResponse>(`${this.baseUrl}${endpoint}`, { params }).pipe(
+        tap((response) => console.log('Movies response:', response)),
+      ),
     );
   }
 
@@ -126,8 +194,12 @@ export class ClientService {
           sort_by: 'popularity.desc',
         });
 
-    return this.http.get<TmdbResponse>(`${this.baseUrl}${endpoint}`, { params }).pipe(
-      tap((response) => console.log('Series response:', response)),
+    const cacheKey = this.buildListCacheKey('tv', trimmedQuery, page, language);
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http.get<TmdbResponse>(`${this.baseUrl}${endpoint}`, { params }).pipe(
+        tap((response) => console.log('Series response:', response)),
+      ),
     );
   }
 
@@ -141,12 +213,18 @@ export class ClientService {
       ...(includeTranslations ? { append_to_response: 'translations' } : {}),
     });
 
-    return this.http
-      .get<TmdbDetail & { translations?: TmdbTranslationsResponse }>(
-        `${this.baseUrl}/movie/${id}`,
-        { params },
-      )
-      .pipe(tap((response) => console.log('Movie detail response:', response)));
+    const cacheKey = this.buildDetailCacheKey('movie', id, language, includeTranslations);
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http
+        .get<TmdbDetail & { translations?: TmdbTranslationsResponse }>(
+          `${this.baseUrl}/movie/${id}`,
+          { params },
+        )
+        .pipe(
+          tap((response) => console.log('Movie detail response:', response)),
+        ),
+    );
   }
 
   getSeriesDetails(
@@ -159,28 +237,44 @@ export class ClientService {
       ...(includeTranslations ? { append_to_response: 'translations' } : {}),
     });
 
-    return this.http
-      .get<TmdbDetail & { translations?: TmdbTranslationsResponse }>(
-        `${this.baseUrl}/tv/${id}`,
-        { params },
-      )
-      .pipe(tap((response) => console.log('Series detail response:', response)));
+    const cacheKey = this.buildDetailCacheKey('tv', id, language, includeTranslations);
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http
+        .get<TmdbDetail & { translations?: TmdbTranslationsResponse }>(
+          `${this.baseUrl}/tv/${id}`,
+          { params },
+        )
+        .pipe(
+          tap((response) => console.log('Series detail response:', response)),
+        ),
+    );
   }
 
   getMovieTranslations(id: number): Observable<TmdbTranslationsResponse> {
     const params = this.createParams({});
+    const cacheKey = `movie-translations|id=${id}`;
 
-    return this.http
-      .get<TmdbTranslationsResponse>(`${this.baseUrl}/movie/${id}/translations`, { params })
-      .pipe(tap((response) => console.log('Movie translations response:', response)));
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http
+        .get<TmdbTranslationsResponse>(`${this.baseUrl}/movie/${id}/translations`, { params })
+        .pipe(
+          tap((response) => console.log('Movie translations response:', response)),
+        ),
+    );
   }
 
   getSeriesTranslations(id: number): Observable<TmdbTranslationsResponse> {
     const params = this.createParams({});
+    const cacheKey = `tv-translations|id=${id}`;
 
-    return this.http
-      .get<TmdbTranslationsResponse>(`${this.baseUrl}/tv/${id}/translations`, { params })
-      .pipe(tap((response) => console.log('Series translations response:', response)));
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http
+        .get<TmdbTranslationsResponse>(`${this.baseUrl}/tv/${id}/translations`, { params })
+        .pipe(
+          tap((response) => console.log('Series translations response:', response)),
+        ),
+    );
   }
 
   getPosterUrl(path: string | null): string {
@@ -190,4 +284,31 @@ export class ClientService {
 
     return `${environment.tmdbImageBaseUrl}${path}`;
   }
+
+  clearCache(): void {
+    this.cache.clear();
+  }
+
+  clearExpiredCache(): void {
+    const now = Date.now();
+
+    for (const [key, entry] of this.cache.entries()) {
+      if (now > entry.expiresAt) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
+  clearSearchCache(): void {
+    for (const key of this.cache.keys()) {
+      if (
+        key.startsWith('movie|') ||
+        key.startsWith('tv|')
+      ) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
+
 }
