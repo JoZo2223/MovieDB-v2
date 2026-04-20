@@ -1,0 +1,44 @@
+{
+  "HEADER": {
+    "TITLE": "TMDB Suche",
+    "SUBTITLE": "Filme und Serien durchsuchen"
+  },
+  "TABS": {
+    "MOVIES": "Filme",
+    "SERIES": "Serien"
+  },
+  "SEARCH": {
+    "MOVIES": "Filme suchen",
+    "SERIES": "Serien suchen"
+  },
+  "RESULTS": {
+    "MOVIES": "Filmergebnisse",
+    "SERIES": "Serienergebnisse",
+    "LOADING": "Wird geladen...",
+    "LOADING_MORE": "Weitere Ergebnisse werden geladen...",
+    "NO_MORE": "Keine weiteren Ergebnisse verfügbar.",
+    "NO_RESULTS": "Keine Ergebnisse gefunden.",
+    "ERROR": "Beim Laden der Ergebnisse ist ein Fehler aufgetreten.",
+    "ERROR_LOAD_MORE": "Weitere Ergebnisse konnten nicht geladen werden.",
+    "COUNT": "{{count}} Ergebnisse",
+    "UNKNOWN_TITLE": "Ohne Titel",
+    "UNKNOWN_DATE": "Unbekanntes Datum",
+    "NO_IMAGE": "Kein Bild"
+  },
+  "DETAILS": {
+    "UNTITLED": "Ohne Titel",
+    "RELEASE_DATE": "Veröffentlichungsdatum",
+    "UNKNOWN_DATE": "Unbekanntes Datum",
+    "NO_OVERVIEW": "Keine Beschreibung verfügbar.",
+    "RATING": "Bewertung",
+    "GENRES": "Genres",
+    "STATUS": "Status",
+    "RUNTIME": "Laufzeit",
+    "SEASONS": "Staffeln",
+    "EPISODES": "Folgen",
+    "UNKNOWN": "Unbekannt",
+    "NO_IMAGE": "Kein Bild",
+    "LOADING": "Details werden geladen...",
+    "ERROR": "Details konnten nicht geladen werden."
+  }
+}

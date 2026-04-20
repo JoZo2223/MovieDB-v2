@@ -1,0 +1,27 @@
+<div class="dialog-layout">
+  @if (posterUrl()) {
+    <img [src]="posterUrl()" [alt]="title()" class="poster" />
+  } @else {
+    <div class="poster placeholder">{{ 'DETAILS.NO_IMAGE' | translate }}</div>
+  }
+
+  <div class="content">
+    <h2>{{ title() }}</h2>
+
+    <p><strong>{{ 'DETAILS.RELEASE_DATE' | translate }}:</strong> {{ date() }}</p>
+    <p><strong>{{ 'DETAILS.RATING' | translate }}:</strong> {{ detail().vote_average || 'N/A' }}</p>
+    <p><strong>{{ 'DETAILS.GENRES' | translate }}:</strong> {{ genreText() }}</p>
+    <p><strong>{{ 'DETAILS.STATUS' | translate }}:</strong> {{ detail().status || ('DETAILS.UNKNOWN' | translate) }}</p>
+
+    @if (type() === 'movies' && detail().runtime) {
+      <p><strong>{{ 'DETAILS.RUNTIME' | translate }}:</strong> {{ detail().runtime }} min</p>
+    }
+
+    @if (type() === 'series') {
+      <p><strong>{{ 'DETAILS.SEASONS' | translate }}:</strong> {{ detail().number_of_seasons || 'N/A' }}</p>
+      <p><strong>{{ 'DETAILS.EPISODES' | translate }}:</strong> {{ detail().number_of_episodes || 'N/A' }}</p>
+    }
+
+    <p class="overview">{{ detail().overview || ('DETAILS.NO_OVERVIEW' | translate) }}</p>
+  </div>
+</div>

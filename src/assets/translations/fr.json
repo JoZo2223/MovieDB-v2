@@ -1,0 +1,44 @@
+{
+  "HEADER": {
+    "TITLE": "Recherche TMDB",
+    "SUBTITLE": "Recherchez des films et des séries"
+  },
+  "TABS": {
+    "MOVIES": "Films",
+    "SERIES": "Séries"
+  },
+  "SEARCH": {
+    "MOVIES": "Rechercher des films",
+    "SERIES": "Rechercher des séries"
+  },
+  "RESULTS": {
+    "MOVIES": "Résultats des films",
+    "SERIES": "Résultats des séries",
+    "LOADING": "Chargement...",
+    "LOADING_MORE": "Chargement de plus de résultats...",
+    "NO_MORE": "Aucun autre résultat à charger.",
+    "NO_RESULTS": "Aucun résultat trouvé.",
+    "ERROR": "Une erreur est survenue lors du chargement des résultats.",
+    "ERROR_LOAD_MORE": "Impossible de charger plus de résultats.",
+    "COUNT": "{{count}} résultats",
+    "UNKNOWN_TITLE": "Sans titre",
+    "UNKNOWN_DATE": "Date inconnue",
+    "NO_IMAGE": "Pas d'image"
+  },
+  "DETAILS": {
+    "UNTITLED": "Sans titre",
+    "RELEASE_DATE": "Date de sortie",
+    "UNKNOWN_DATE": "Date inconnue",
+    "NO_OVERVIEW": "Aucun résumé disponible.",
+    "RATING": "Note",
+    "GENRES": "Genres",
+    "STATUS": "Statut",
+    "RUNTIME": "Durée",
+    "SEASONS": "Saisons",
+    "EPISODES": "Épisodes",
+    "UNKNOWN": "Inconnu",
+    "NO_IMAGE": "Pas d'image",
+    "LOADING": "Chargement des détails...",
+    "ERROR": "Impossible de charger les détails."
+  }
+}

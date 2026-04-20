@@ -1,0 +1,44 @@
+{
+  "HEADER": {
+    "TITLE": "TMDB Vyhľadávanie",
+    "SUBTITLE": "Vyhľadávajte filmy a seriály"
+  },
+  "TABS": {
+    "MOVIES": "Filmy",
+    "SERIES": "Seriály"
+  },
+  "SEARCH": {
+    "MOVIES": "Hľadať filmy",
+    "SERIES": "Hľadať seriály"
+  },
+  "RESULTS": {
+    "MOVIES": "Výsledky filmov",
+    "SERIES": "Výsledky seriálov",
+    "LOADING": "Načítava sa...",
+    "LOADING_MORE": "Načítavajú sa ďalšie výsledky...",
+    "NO_MORE": "Žiadne ďalšie výsledky na načítanie.",
+    "NO_RESULTS": "Nenašli sa žiadne výsledky.",
+    "ERROR": "Pri načítavaní výsledkov sa vyskytla chyba.",
+    "ERROR_LOAD_MORE": "Nepodarilo sa načítať ďalšie výsledky.",
+    "COUNT": "{{count}} výsledkov",
+    "UNKNOWN_TITLE": "Bez názvu",
+    "UNKNOWN_DATE": "Neznámy dátum",
+    "NO_IMAGE": "Bez obrázka"
+  },
+  "DETAILS": {
+    "UNTITLED": "Bez názvu",
+    "RELEASE_DATE": "Dátum vydania",
+    "UNKNOWN_DATE": "Neznámy dátum",
+    "NO_OVERVIEW": "Popis nie je dostupný.",
+    "RATING": "Hodnotenie",
+    "GENRES": "Žánre",
+    "STATUS": "Stav",
+    "RUNTIME": "Dĺžka",
+    "SEASONS": "Sezóny",
+    "EPISODES": "Epizódy",
+    "UNKNOWN": "Neznáme",
+    "NO_IMAGE": "Bez obrázka",
+    "LOADING": "Načítavajú sa detaily...",
+    "ERROR": "Nepodarilo sa načítať detaily."
+  }
+}

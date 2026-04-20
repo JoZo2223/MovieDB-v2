@@ -1,0 +1,44 @@
+{
+  "HEADER": {
+    "TITLE": "TMDB Search",
+    "SUBTITLE": "Search movies and series"
+  },
+  "TABS": {
+    "MOVIES": "Movies",
+    "SERIES": "Series"
+  },
+  "SEARCH": {
+    "MOVIES": "Search movies",
+    "SERIES": "Search series"
+  },
+  "RESULTS": {
+    "MOVIES": "Movie Results",
+    "SERIES": "Series Results",
+    "LOADING": "Loading...",
+    "LOADING_MORE": "Loading more results...",
+    "NO_MORE": "No more results to load.",
+    "NO_RESULTS": "No results found.",
+    "ERROR": "Something went wrong while loading results.",
+    "ERROR_LOAD_MORE": "Could not load more results.",
+    "COUNT": "{{count}} results",
+    "UNKNOWN_TITLE": "Untitled",
+    "UNKNOWN_DATE": "Unknown date",
+    "NO_IMAGE": "No image"
+  },
+  "DETAILS": {
+    "UNTITLED": "Untitled",
+    "RELEASE_DATE": "Release date",
+    "UNKNOWN_DATE": "Unknown date",
+    "NO_OVERVIEW": "No overview available.",
+    "RATING": "Rating",
+    "GENRES": "Genres",
+    "STATUS": "Status",
+    "RUNTIME": "Runtime",
+    "SEASONS": "Seasons",
+    "EPISODES": "Episodes",
+    "UNKNOWN": "Unknown",
+    "NO_IMAGE": "No image",
+    "LOADING": "Loading details...",
+    "ERROR": "Could not load details."
+  }
+}

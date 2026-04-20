@@ -1,0 +1,38 @@
+.dialog-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.poster {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+.poster.placeholder {
+  min-height: 330px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #6b7280;
+  text-align: center;
+  padding: 16px;
+}
+
+.content h2 {
+  margin-top: 0;
+}
+
+.overview {
+  margin-top: 16px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .dialog-layout {
+    grid-template-columns: 1fr;
+  }
+}

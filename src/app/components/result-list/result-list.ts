@@ -21,5 +21,6 @@ export class ResultsListComponent {
     this.itemSelected.emit(item);
   }
 
-  trackById = (_index: number, item: TmdbItem): number => item.id;
+  trackById = (index: number, item: TmdbItem): string =>
+    `${this.activeTab()}-${item.id}-${index}`;
 }

@@ -2,64 +2,42 @@
   <div class="sticky-wrapper">
     <div class="header">
       <app-header
-        [title]="headerTitle()"
-        [subtitle]="headerSubtitle()">
+        [title]="'HEADER.TITLE' | translate"
+        [subtitle]="'HEADER.SUBTITLE' | translate">
       </app-header>
 
       <app-language-switcher></app-language-switcher>
 
       <app-tabs
-        [activeTab]="activeTab()"
+        [activeTab]="store.activeTab()"
         (tabChange)="setTab($event)">
       </app-tabs>
     </div>
 
     <app-search-field
       class="search"
-      [searchTerm]="searchTerm()"
-      [placeholder]="searchPlaceholder()"
+      [searchTerm]="store.searchTerm()"
+      [placeholder]="(store.activeTab() === 'movies' ? 'SEARCH.MOVIES' : 'SEARCH.SERIES') | translate"
       (searchTermChange)="onSearchChange($event)">
     </app-search-field>
   </div>
 
   <div class="results">
-    <div class="results-header">
-      <h2>{{ resultsTitle() }}</h2>
-
-      @if (showResultCount()) {
-        <span class="results-count">
-          {{ resultCountLabel() }}
-        </span>
-      }
-    </div>
-
-    @if (showLoading()) {
-      <app-info-message [text]="resultsLoadingLabel()" />
-    }
-
-    @if (showError()) {
-      <app-info-message [text]="errorMessage()" type="error" />
-    }
-
-    @if (showResultsList()) {
-      <app-results-list
-        [results]="results()"
-        [activeTab]="activeTab()"
-        (itemSelected)="openDetails($event)">
-      </app-results-list>
-
-      @if (showLoadingMore()) {
-        <app-info-message [text]="resultsLoadingMoreLabel()" />
-      }
-
-      @if (showNoMoreResults()) {
-        <app-info-message [text]="resultsNoMoreLabel()" />
-      }
-    }
-
-    @if (showNoResults()) {
-      <app-info-message [text]="resultsNoResultsLabel()" />
-    }
+    <app-results-section
+      [titleKey]="store.activeTab() === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES'"
+      [resultCount]="store.results().length"
+      [showResultCount]="store.showResultCount()"
+      [showLoading]="store.showLoading()"
+      [showError]="store.showError()"
+      [errorMessage]="store.errorMessage()"
+      [showResultsList]="store.showResultsList()"
+      [showLoadingMore]="store.showLoadingMore()"
+      [showNoMoreResults]="store.showNoMoreResults()"
+      [showNoResults]="store.showNoResults()"
+      [results]="store.results()"
+      [activeTab]="store.activeTab()"
+      (itemSelected)="openDetails($event)">
+    </app-results-section>
 
     <div #loadMoreTrigger class="load-more-trigger"></div>
   </div>

@@ -1,41 +1,19 @@
 <div class="dialog-container">
   <button class="close-button" type="button" (click)="close()">✕</button>
 
-  @if (isLoading()) {
-    <div class="state-message">{{ loadingLabel() }}</div>
-  }
+  <app-info-message
+    [textKey]="'DETAILS.LOADING'"
+    [isLoading]="isLoading()"
+    [visible]="isLoading()">
+  </app-info-message>
 
-  @if (errorMessage()) {
-    <div class="state-message error">{{ errorMessage() }}</div>
-  }
+  <app-info-message
+    [text]="errorMessage() | translate"
+    [isError]="!!errorMessage()"
+    [visible]="!!errorMessage()">
+  </app-info-message>
 
   @if (!isLoading() && detail()) {
-    <div class="dialog-layout">
-      @if (posterUrl()) {
-        <img [src]="posterUrl()" [alt]="title()" class="poster" />
-      } @else {
-        <div class="poster placeholder">{{ noImageLabel() }}</div>
-      }
-
-      <div class="content">
-        <h2>{{ title() }}</h2>
-
-        <p><strong>{{ releaseDateLabel() }}:</strong> {{ date() }}</p>
-        <p><strong>{{ ratingLabel() }}:</strong> {{ detail()?.vote_average || 'N/A' }}</p>
-        <p><strong>{{ genresLabel() }}:</strong> {{ genreText() }}</p>
-        <p><strong>{{ statusLabel() }}:</strong> {{ detail()?.status || unknownLabel() }}</p>
-
-        @if (data.type === 'movies' && detail()?.runtime) {
-          <p><strong>{{ runtimeLabel() }}:</strong> {{ detail()?.runtime }} min</p>
-        }
-
-        @if (data.type === 'series') {
-          <p><strong>{{ seasonsLabel() }}:</strong> {{ detail()?.number_of_seasons || 'N/A' }}</p>
-          <p><strong>{{ episodesLabel() }}:</strong> {{ detail()?.number_of_episodes || 'N/A' }}</p>
-        }
-
-        <p class="overview">{{ detail()?.overview || noOverviewLabel() }}</p>
-      </div>
-    </div>
+    <app-result-detail-content [detail]="detail()!" [type]="data.type"></app-result-detail-content>
   }
 </div>

@@ -3,13 +3,13 @@
     class="tab-button"
     [class.active]="activeTab() === 'movies'"
     (click)="selectTab('movies')">
-    {{ moviesLabel() }}
+    {{ 'TABS.MOVIES' | translate }}
   </button>
 
   <button
     class="tab-button"
     [class.active]="activeTab() === 'series'"
     (click)="selectTab('series')">
-    {{ seriesLabel() }}
+    {{ 'TABS.SERIES' | translate }}
   </button>
 </div>

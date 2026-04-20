@@ -1,21 +1,22 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { TmdbItem, ClientService, TmdbTranslationsResponse } from '../../../service/clientService';
-import { LanguageStore } from '../../languageStore/language-store';
+import { getLanguageByCode, readStoredLanguage } from '../../i18n/language-config';
 import { UtilsService } from '../../../service/utilsService';
-import { AppTranslateService } from '../../../service/translationService';
 import { TabType } from '../tabs/tabs';
 
 @Component({
   selector: 'app-result-card',
   standalone: true,
+  imports: [TranslatePipe],
   templateUrl: './result-card.html',
   styleUrl: './result-card.css',
 })
 export class ResultCardComponent {
   private readonly client = inject(ClientService);
-  private readonly languageStore = inject(LanguageStore);
+  private readonly translate = inject(TranslateService);
   private readonly utils = inject(UtilsService);
-  private readonly translate = inject(AppTranslateService);
 
   readonly item = input.required<TmdbItem>();
   readonly type = input.required<TabType>();
@@ -26,14 +27,8 @@ export class ResultCardComponent {
   private readonly hasTriedTranslation = signal(false);
 
   readonly posterUrl = computed(() => this.utils.getPosterUrl(this.item().poster_path));
-  readonly title = computed(() =>
-    this.utils.getDisplayTitle(this.item(), this.translate.text('resultUnknownTitle')),
-  );
-  readonly date = computed(() =>
-    this.utils.getDisplayDate(this.item(), this.translate.text('resultUnknownDate')),
-  );
+  readonly title = computed(() => this.utils.getDisplayTitle(this.item(), ''));
   readonly overview = computed(() => this.translatedOverview() || this.item().overview || '');
-  readonly noImageLabel = computed(() => this.translate.text('resultNoImage'));
 
   onClick(): void {
     this.cardClick.emit(this.item());
@@ -47,7 +42,12 @@ export class ResultCardComponent {
   }
 
   onHover(): void {
-    if (this.item().overview || this.translatedOverview() || this.isLoadingTranslation() || this.hasTriedTranslation()) {
+    if (
+      this.item().overview ||
+      this.translatedOverview() ||
+      this.isLoadingTranslation() ||
+      this.hasTriedTranslation()
+    ) {
       return;
     }
 
@@ -61,7 +61,9 @@ export class ResultCardComponent {
 
     request.subscribe({
       next: (response: TmdbTranslationsResponse) => {
-        const selectedLanguage = this.languageStore.selected();
+        const selectedLanguage = getLanguageByCode(
+          this.translate.currentLang || readStoredLanguage(),
+        );
         const translatedOverview = this.utils.getTranslatedOverview(
           response,
           selectedLanguage.tmdbCode,

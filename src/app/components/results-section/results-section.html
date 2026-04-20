@@ -1,0 +1,46 @@
+<div class="results-header">
+  <h2>{{ titleKey() | translate }}</h2>
+
+  @if (showResultCount()) {
+    <span class="results-count">
+      {{ 'RESULTS.COUNT' | translate: { count: resultCount() } }}
+    </span>
+  }
+</div>
+
+<app-info-message
+  [textKey]="'RESULTS.LOADING'"
+  [isLoading]="showLoading()"
+  [visible]="showLoading()">
+</app-info-message>
+
+<app-info-message
+  [text]="errorMessage() | translate"
+  [isError]="showError()"
+  [visible]="showError()">
+</app-info-message>
+
+@if (showResultsList()) {
+  <app-results-list
+    [results]="results()"
+    [activeTab]="activeTab()"
+    (itemSelected)="onItemSelected($event)">
+  </app-results-list>
+
+  <app-info-message
+    [textKey]="'RESULTS.LOADING_MORE'"
+    [isLoading]="showLoadingMore()"
+    [visible]="showLoadingMore()">
+  </app-info-message>
+
+  <app-info-message
+    [textKey]="'RESULTS.NO_MORE'"
+    [visible]="showNoMoreResults()">
+  </app-info-message>
+}
+
+<app-info-message
+  [textKey]="'RESULTS.NO_RESULTS'"
+  [isEmpty]="showNoResults()"
+  [visible]="showNoResults()">
+</app-info-message>

@@ -6,13 +6,13 @@
   tabindex="0"
 >
   @if (posterUrl()) {
-    <img [src]="posterUrl()" [alt]="title()" class="poster" />
+    <img [src]="posterUrl()" [alt]="title() || ('RESULTS.UNKNOWN_TITLE' | translate)" class="poster" />
   } @else {
-    <div class="poster placeholder">{{ noImageLabel() }}</div>
+    <div class="poster placeholder">{{ 'RESULTS.NO_IMAGE' | translate }}</div>
   }
 
   <div class="overlay">
-    <h3>{{ title() }}</h3>
+    <h3>{{ title() || ('RESULTS.UNKNOWN_TITLE' | translate) }}</h3>
     <p>{{ overview() }}</p>
   </div>
 </div>

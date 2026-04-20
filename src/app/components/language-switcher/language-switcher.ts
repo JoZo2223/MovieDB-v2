@@ -1,6 +1,15 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LanguageStore, Language } from '../../languageStore/language-store';
+import { TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+
+import {
+  APP_LANGUAGES,
+  AppLanguage,
+  getLanguageByCode,
+  persistLanguage,
+  readStoredLanguage,
+} from '../../i18n/language-config';
 
 @Component({
   selector: 'app-language-switcher',
@@ -10,18 +19,26 @@ import { LanguageStore, Language } from '../../languageStore/language-store';
   styleUrl: './language-switcher.css',
 })
 export class LanguageSwitcherComponent {
-  readonly store = inject(LanguageStore);
+  private readonly translate = inject(TranslateService);
+  private readonly currentLangChange = toSignal(this.translate.onLangChange, {
+    initialValue: null,
+  });
+
   readonly isOpen = signal(false);
-  readonly availableLanguages = computed(() => this.store.languages);
-  readonly selectedLanguage = this.store.selected;
+  readonly availableLanguages = APP_LANGUAGES;
+  readonly selectedLanguage = computed(() => {
+    this.currentLangChange();
+    return getLanguageByCode(this.translate.currentLang || readStoredLanguage());
+  });
 
   toggleDropdown(): void {
     this.isOpen.update((value) => !value);
   }
 
-  setLanguage(language: Language, event: Event): void {
+  setLanguage(language: AppLanguage, event: Event): void {
     event.stopPropagation();
-    this.store.setLanguage(language.code);
+    persistLanguage(language.code);
+    this.translate.use(language.code);
     this.isOpen.set(false);
   }
 }

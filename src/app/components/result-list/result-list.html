@@ -1,7 +1,11 @@
 <div class="results-list">
   @for (item of items(); track trackById($index, item)) {
     <div class="result-wrapper">
-      <app-result-card [item]="item" [type]="activeTab()" (cardClick)="onItemSelected($event)"></app-result-card>
+      <app-result-card
+        [item]="item"
+        [type]="activeTab()"
+        (cardClick)="onItemSelected($event)">
+      </app-result-card>
     </div>
   }
 </div>

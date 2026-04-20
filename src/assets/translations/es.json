@@ -1,0 +1,44 @@
+{
+  "HEADER": {
+    "TITLE": "Búsqueda TMDB",
+    "SUBTITLE": "Busca películas y series"
+  },
+  "TABS": {
+    "MOVIES": "Películas",
+    "SERIES": "Series"
+  },
+  "SEARCH": {
+    "MOVIES": "Buscar películas",
+    "SERIES": "Buscar series"
+  },
+  "RESULTS": {
+    "MOVIES": "Resultados de películas",
+    "SERIES": "Resultados de series",
+    "LOADING": "Cargando...",
+    "LOADING_MORE": "Cargando más resultados...",
+    "NO_MORE": "No hay más resultados para cargar.",
+    "NO_RESULTS": "No se encontraron resultados.",
+    "ERROR": "Se produjo un error al cargar los resultados.",
+    "ERROR_LOAD_MORE": "No se pudieron cargar más resultados.",
+    "COUNT": "{{count}} resultados",
+    "UNKNOWN_TITLE": "Sin título",
+    "UNKNOWN_DATE": "Fecha desconocida",
+    "NO_IMAGE": "Sin imagen"
+  },
+  "DETAILS": {
+    "UNTITLED": "Sin título",
+    "RELEASE_DATE": "Fecha de estreno",
+    "UNKNOWN_DATE": "Fecha desconocida",
+    "NO_OVERVIEW": "No hay descripción disponible.",
+    "RATING": "Valoración",
+    "GENRES": "Géneros",
+    "STATUS": "Estado",
+    "RUNTIME": "Duración",
+    "SEASONS": "Temporadas",
+    "EPISODES": "Episodios",
+    "UNKNOWN": "Desconocido",
+    "NO_IMAGE": "Sin imagen",
+    "LOADING": "Cargando detalles...",
+    "ERROR": "No se pudieron cargar los detalles."
+  }
+}
