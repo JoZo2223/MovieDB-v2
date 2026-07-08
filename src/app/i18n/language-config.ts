@@ -9,12 +9,37 @@ export type AppLanguage = {
   flag: string;
 };
 
-export const APP_LANGUAGES: readonly AppLanguage[] = [
-  { code: 'sk', tmdbCode: 'sk-SK', label: 'SK', flag: flag('sk') },
-  { code: 'en', tmdbCode: 'en-US', label: 'EN', flag: flag('gb') },
-  { code: 'de', tmdbCode: 'de-DE', label: 'DE', flag: flag('de') },
-  { code: 'fr', tmdbCode: 'fr-FR', label: 'FR', flag: flag('fr') },
-  { code: 'es', tmdbCode: 'es-ES', label: 'ES', flag: flag('es') },
+export const APP_LANGUAGES = [
+  {
+    code: 'sk',
+    label: 'Slovenčina',
+    flag: 'https://flagcdn.com/w40/sk.png',
+    tmdbCode: 'sk-SK',
+  },
+  {
+    code: 'en',
+    label: 'English',
+    flag: 'https://flagcdn.com/w40/gb.png',
+    tmdbCode: 'en-US',
+  },
+  {
+    code: 'de',
+    label: 'Deutsch',
+    flag: 'https://flagcdn.com/w40/de.png',
+    tmdbCode: 'de-DE',
+  },
+  {
+    code: 'fr',
+    label: 'Français',
+    flag: 'https://flagcdn.com/w40/fr.png',
+    tmdbCode: 'fr-FR',
+  },
+  {
+    code: 'es',
+    label: 'Español',
+    flag: 'https://flagcdn.com/w40/es.png',
+    tmdbCode: 'es-ES',
+  },
 ] as const;
 
 export const DEFAULT_LANGUAGE_CODE: AppLanguageCode = 'en';

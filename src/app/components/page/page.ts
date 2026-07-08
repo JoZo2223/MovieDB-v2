@@ -5,13 +5,14 @@ import {
   ElementRef,
   OnDestroy,
   ViewChild,
+  computed,
   effect,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { TmdbItem } from '../../../service/clientService';
@@ -22,11 +23,8 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
 import { ResultDetailsDialog } from '../result-details-dialog/result-details-dialog';
 import { ResultsSectionComponent } from '../results-section/results-section';
 import { SearchPageStore } from '../../store/search-page.store';
-import {
-  DEFAULT_LANGUAGE_CODE,
-  isAppLanguageCode,
-  persistLanguage,
-} from '../../i18n/language-config';
+import { MessageOptions } from '../info-message/message-options';
+import { LanguageService } from '../../../service/language.service';
 
 @Component({
   selector: 'app-search-page',
@@ -49,10 +47,43 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly languageService = inject(LanguageService);
 
   readonly store = inject(SearchPageStore);
+
+  readonly resultMessages = computed<MessageOptions[]>(() => [
+    {
+      id: 'loading',
+      visible: this.store.showLoading(),
+      kind: 'loading',
+      textKey: 'RESULTS.LOADING',
+    },
+    {
+      id: 'error',
+      visible: this.store.showError(),
+      kind: 'error',
+      textKey: this.store.errorMessage(),
+    },
+    {
+      id: 'loading-more',
+      visible: this.store.showLoadingMore(),
+      kind: 'loading',
+      textKey: 'RESULTS.LOADING_MORE',
+    },
+    {
+      id: 'no-more-results',
+      visible: this.store.showNoMoreResults(),
+      kind: 'info',
+      textKey: 'RESULTS.NO_MORE',
+    },
+    {
+      id: 'no-results',
+      visible: this.store.showNoResults(),
+      kind: 'empty',
+      textKey: 'RESULTS.NO_RESULTS',
+    },
+  ]);
 
   @ViewChild('loadMoreTrigger', { static: false })
   loadMoreTrigger?: ElementRef<HTMLDivElement>;
@@ -66,17 +97,10 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
         const langParam = params.get('lang');
         const tabParam = params.get('tab');
 
-        const normalizedLanguage = isAppLanguageCode(langParam)
-          ? langParam
-          : DEFAULT_LANGUAGE_CODE;
-
+        const normalizedLanguage = this.languageService.syncFromRoute(langParam);
         const normalizedTab: TabType = isTabType(tabParam) ? tabParam : 'movies';
 
-        const shouldRedirect =
-          normalizedLanguage !== langParam || normalizedTab !== tabParam;
-
-        persistLanguage(normalizedLanguage);
-        this.translate.use(normalizedLanguage);
+        const shouldRedirect = normalizedLanguage !== langParam || normalizedTab !== tabParam;
 
         this.store.setActiveTab(normalizedTab);
 
@@ -116,8 +140,7 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   }
 
   setTab(tab: TabType): void {
-    const currentLanguage = this.translate.currentLang || DEFAULT_LANGUAGE_CODE;
-    this.router.navigate(['/', currentLanguage, tab]);
+    this.router.navigate(['/', this.languageService.currentLanguageCode(), tab]);
   }
 
   onSearchChange(value: string): void {

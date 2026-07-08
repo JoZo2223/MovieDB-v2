@@ -62,8 +62,9 @@ export class ResultCardComponent {
     request.subscribe({
       next: (response: TmdbTranslationsResponse) => {
         const selectedLanguage = getLanguageByCode(
-          this.translate.currentLang || readStoredLanguage(),
+          this.translate.getCurrentLang() || readStoredLanguage(),
         );
+
         const translatedOverview = this.utils.getTranslatedOverview(
           response,
           selectedLanguage.tmdbCode,

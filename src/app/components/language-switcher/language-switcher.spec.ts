@@ -1,23 +1,40 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { LanguageSwitcher } from './language-switcher';
+import { AppLanguage } from '../../i18n/language-config';
+import { LanguageService } from '../../../service/language.service';
+import { isTabType, TabType } from '../tabs/tabs';
 
-describe('LanguageSwitcher', () => {
-  let component: LanguageSwitcher;
-  let fixture: ComponentFixture<LanguageSwitcher>;
+@Component({
+  selector: 'app-language-switcher',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './language-switcher.html',
+  styleUrl: './language-switcher.css',
+})
+export class LanguageSwitcherComponent {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly languageService = inject(LanguageService);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LanguageSwitcher]
-    })
-    .compileComponents();
+  readonly isOpen = signal(false);
+  readonly availableLanguages = this.languageService.languages;
+  readonly selectedLanguage = this.languageService.currentLanguage;
 
-    fixture = TestBed.createComponent(LanguageSwitcher);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
+  toggleDropdown(): void {
+    this.isOpen.update((value) => !value);
+  }
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  setLanguage(language: AppLanguage, event: Event): void {
+    event.stopPropagation();
+
+    const currentTabParam = this.route.snapshot.paramMap.get('tab');
+    const currentTab: TabType = isTabType(currentTabParam) ? currentTabParam : 'movies';
+
+    this.languageService.setLanguage(language.code);
+    this.router.navigate(['/', language.code, currentTab]);
+
+    this.isOpen.set(false);
+  }
+}

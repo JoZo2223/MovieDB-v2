@@ -1,156 +1,223 @@
-import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslateService } from '@ngx-translate/core';
+import { computed, effect, inject, untracked } from '@angular/core';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withProps,
+  withState,
+} from '@ngrx/signals';
 
 import { ClientService, TmdbItem } from '../../service/clientService';
-import { getLanguageByCode, readStoredLanguage } from '../i18n/language-config';
 import { TabType } from '../components/tabs/tabs';
+import { LanguageService } from '../../service/language.service';
 
-@Injectable()
-export class SearchPageStore {
-  private readonly client = inject(ClientService);
-  private readonly translate = inject(TranslateService);
-  private readonly currentLangChange = toSignal(this.translate.onLangChange, {
-    initialValue: null,
+type SearchPageState = {
+  activeTab: TabType;
+  searchTerm: string;
+  results: TmdbItem[];
+  isLoading: boolean;
+  isLoadingMore: boolean;
+  errorMessage: string;
+  currentPage: number;
+  totalPages: number;
+  hasSearched: boolean;
+  initialized: boolean;
+};
+
+const initialState: SearchPageState = {
+  activeTab: 'movies',
+  searchTerm: '',
+  results: [],
+  isLoading: false,
+  isLoadingMore: false,
+  errorMessage: '',
+  currentPage: 1,
+  totalPages: 1,
+  hasSearched: false,
+  initialized: false,
+};
+
+function executeSearch(store: any, resetPage: boolean): void {
+  if (store.isLoading() || store.isLoadingMore()) {
+    return;
+  }
+
+  const query = store.searchTerm().trim();
+  const language = store.languageService.currentTmdbLanguage();
+
+  if (resetPage) {
+    patchState(store, {
+      currentPage: 1,
+      totalPages: 1,
+      results: [],
+    });
+  }
+
+  patchState(store, {
+    isLoading: true,
+    errorMessage: '',
+    hasSearched: true,
   });
 
-  readonly activeTab = signal<TabType>('movies');
-  readonly searchTerm = signal('');
-  readonly results = signal<TmdbItem[]>([]);
-  readonly isLoading = signal(false);
-  readonly isLoadingMore = signal(false);
-  readonly errorMessage = signal('');
-  readonly currentPage = signal(1);
-  readonly totalPages = signal(1);
-  readonly hasSearched = signal(false);
-  readonly initialized = signal(false);
+  const request$ =
+    store.activeTab() === 'movies'
+      ? store.client.getMovies(query, 1, language)
+      : store.client.getSeries(query, 1, language);
 
-  readonly hasResults = computed(() => this.results().length > 0);
-  readonly hasMoreResults = computed(() => this.currentPage() < this.totalPages());
+  request$.subscribe({
+    next: (response: any) => {
+      patchState(store, {
+        results: response.results ?? [],
+        currentPage: response.page ?? 1,
+        totalPages: response.total_pages ?? 1,
+      });
+    },
+    error: () => {
+      patchState(store, {
+        errorMessage: 'RESULTS.ERROR',
+        results: [],
+        currentPage: 1,
+        totalPages: 1,
+      });
+    },
+    complete: () => {
+      patchState(store, { isLoading: false });
+    },
+  });
+}
 
-  readonly showLoading = computed(() => this.isLoading());
-  readonly showError = computed(() => !!this.errorMessage());
-  readonly showResultCount = computed(() => !this.isLoading() && !this.errorMessage() && this.hasResults());
-  readonly showResultsList = computed(() => !this.isLoading() && !this.errorMessage() && this.hasResults());
-  readonly showLoadingMore = computed(() => this.showResultsList() && this.isLoadingMore());
-  readonly showNoMoreResults = computed(() => this.showResultsList() && !this.hasMoreResults());
-  readonly showNoResults = computed(
-    () => !this.isLoading() && !this.errorMessage() && !this.hasResults() && this.hasSearched(),
-  );
+function executeLoadMore(store: any): void {
+  const hasMoreResults = store.currentPage() < store.totalPages();
 
-  constructor() {
-    effect(() => {
-      this.currentLangChange();
+  if (store.isLoading() || store.isLoadingMore() || !hasMoreResults) {
+    return;
+  }
 
-      if (!this.initialized()) {
+  const nextPage = store.currentPage() + 1;
+  const query = store.searchTerm().trim();
+  const language = store.languageService.currentTmdbLanguage();
+
+  patchState(store, { isLoadingMore: true });
+
+  const request$ =
+    store.activeTab() === 'movies'
+      ? store.client.getMovies(query, nextPage, language)
+      : store.client.getSeries(query, nextPage, language);
+
+  request$.subscribe({
+    next: (response: any) => {
+      patchState(store, {
+        results: [...store.results(), ...(response.results ?? [])],
+        currentPage: response.page ?? nextPage,
+        totalPages: response.total_pages ?? store.totalPages(),
+      });
+    },
+    error: () => {
+      patchState(store, {
+        errorMessage: 'RESULTS.ERROR_LOAD_MORE',
+      });
+    },
+    complete: () => {
+      patchState(store, { isLoadingMore: false });
+    },
+  });
+}
+
+export const SearchPageStore = signalStore(
+  withState(initialState),
+
+  withProps(() => ({
+    client: inject(ClientService),
+    languageService: inject(LanguageService),
+  })),
+
+  withComputed((store) => ({
+    hasResults: computed(() => store.results().length > 0),
+    hasMoreResults: computed(() => store.currentPage() < store.totalPages()),
+
+    showLoading: computed(() => store.isLoading()),
+    showError: computed(() => !!store.errorMessage()),
+    showResultCount: computed(
+      () => !store.isLoading() && !store.errorMessage() && store.results().length > 0,
+    ),
+    showResultsList: computed(
+      () => !store.isLoading() && !store.errorMessage() && store.results().length > 0,
+    ),
+    showLoadingMore: computed(
+      () =>
+        !store.isLoading() &&
+        !store.errorMessage() &&
+        store.results().length > 0 &&
+        store.isLoadingMore(),
+    ),
+    showNoMoreResults: computed(
+      () =>
+        !store.isLoading() &&
+        !store.errorMessage() &&
+        store.results().length > 0 &&
+        store.currentPage() >= store.totalPages(),
+    ),
+    showNoResults: computed(
+      () =>
+        !store.isLoading() &&
+        !store.errorMessage() &&
+        store.results().length === 0 &&
+        store.hasSearched(),
+    ),
+  })),
+
+  withMethods((store) => ({
+    initialize(): void {
+      if (store.initialized()) {
         return;
       }
 
-      untracked(() => this.runSearch(true));
-    });
-  }
+      patchState(store, { initialized: true });
+      executeSearch(store, true);
+    },
 
-  initialize(): void {
-    if (this.initialized()) {
-      return;
-    }
+    setActiveTab(tab: TabType): void {
+      if (store.activeTab() === tab) {
+        return;
+      }
 
-    this.initialized.set(true);
-    this.runSearch(true);
-  }
+      patchState(store, { activeTab: tab });
 
-  setActiveTab(tab: TabType): void {
-    if (this.activeTab() === tab) {
-      return;
-    }
+      if (store.initialized()) {
+        executeSearch(store, true);
+      }
+    },
 
-    this.activeTab.set(tab);
-    this.runSearch(true);
-  }
+    setSearchTerm(value: string): void {
+      patchState(store, { searchTerm: value });
 
-  setSearchTerm(value: string): void {
-    this.searchTerm.set(value);
+      if (value.length === 0 || value.trim().length >= 3) {
+        executeSearch(store, true);
+      }
+    },
 
-    if (value.length === 0 || value.trim().length >= 3) {
-      this.runSearch(true);
-    }
-  }
+    reload(): void {
+      executeSearch(store, true);
+    },
 
-  runSearch(resetPage: boolean): void {
-    if (this.isLoading() || this.isLoadingMore()) {
-      return;
-    }
+    loadMore(): void {
+      executeLoadMore(store);
+    },
+  })),
 
-    const query = this.searchTerm().trim();
-    const language = this.getSelectedLanguage().tmdbCode;
+  withHooks({
+    onInit(store) {
+      effect(() => {
+        store.languageService.currentLanguageCode();
 
-    if (resetPage) {
-      this.currentPage.set(1);
-      this.totalPages.set(1);
-      this.results.set([]);
-    }
+        if (!store.initialized()) {
+          return;
+        }
 
-    this.isLoading.set(true);
-    this.errorMessage.set('');
-    this.hasSearched.set(true);
-
-    const request$ =
-      this.activeTab() === 'movies'
-        ? this.client.getMovies(query, 1, language)
-        : this.client.getSeries(query, 1, language);
-
-    request$.subscribe({
-      next: (response) => {
-        this.results.set(response.results ?? []);
-        this.currentPage.set(response.page ?? 1);
-        this.totalPages.set(response.total_pages ?? 1);
-      },
-      error: () => {
-        this.errorMessage.set('RESULTS.ERROR');
-        this.results.set([]);
-        this.currentPage.set(1);
-        this.totalPages.set(1);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
-    });
-  }
-
-  loadMore(): void {
-    if (this.isLoading() || this.isLoadingMore() || !this.hasMoreResults()) {
-      return;
-    }
-
-    const nextPage = this.currentPage() + 1;
-    const query = this.searchTerm().trim();
-    const language = this.getSelectedLanguage().tmdbCode;
-
-    this.isLoadingMore.set(true);
-
-    const request$ =
-      this.activeTab() === 'movies'
-        ? this.client.getMovies(query, nextPage, language)
-        : this.client.getSeries(query, nextPage, language);
-
-    request$.subscribe({
-      next: (response) => {
-        const newResults = response.results ?? [];
-
-        this.results.update((current) => [...current, ...newResults]);
-        this.currentPage.set(response.page ?? nextPage);
-        this.totalPages.set(response.total_pages ?? this.totalPages());
-      },
-      error: () => {
-        this.errorMessage.set('RESULTS.ERROR_LOAD_MORE');
-      },
-      complete: () => {
-        this.isLoadingMore.set(false);
-      },
-    });
-  }
-
-  private getSelectedLanguage() {
-    return getLanguageByCode(this.translate.currentLang || readStoredLanguage());
-  }
-}
+        untracked(() => executeSearch(store, true));
+      });
+    },
+  }),
+);

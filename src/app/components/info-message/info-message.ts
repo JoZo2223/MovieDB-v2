@@ -1,7 +1,8 @@
 import { Component, computed, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
-export type MessageKind = 'info' | 'error' | 'success' | 'warning' | 'loading' | 'empty';
+import { MessageKind, MessageOptions } from './message-options';
+
 export type MessageType = 'info' | 'error' | 'success' | 'warning';
 
 @Component({
@@ -12,41 +13,14 @@ export type MessageType = 'info' | 'error' | 'success' | 'warning';
   styleUrl: './info-message.css',
 })
 export class InfoMessageComponent {
-  readonly text = input('');
-  readonly textKey = input('');
-  readonly visible = input(true);
-  readonly isError = input(false);
-  readonly isSuccess = input(false);
-  readonly isWarning = input(false);
-  readonly isLoading = input(false);
-  readonly isEmpty = input(false);
+  readonly messages = input<MessageOptions[]>([]);
 
-  readonly kind = computed<MessageKind>(() => {
-    if (this.isError()) {
-      return 'error';
-    }
+  readonly visibleMessages = computed(() =>
+    this.messages().filter((message) => message.visible),
+  );
 
-    if (this.isSuccess()) {
-      return 'success';
-    }
-
-    if (this.isWarning()) {
-      return 'warning';
-    }
-
-    if (this.isLoading()) {
-      return 'loading';
-    }
-
-    if (this.isEmpty()) {
-      return 'empty';
-    }
-
-    return 'info';
-  });
-
-  readonly type = computed<MessageType>(() => {
-    switch (this.kind()) {
+  resolveType(kind: MessageKind): MessageType {
+    switch (kind) {
       case 'error':
         return 'error';
       case 'success':
@@ -56,10 +30,10 @@ export class InfoMessageComponent {
       default:
         return 'info';
     }
-  });
+  }
 
-  readonly icon = computed(() => {
-    switch (this.kind()) {
+  resolveIcon(kind: MessageKind): string {
+    switch (kind) {
       case 'error':
         return '❌';
       case 'success':
@@ -73,5 +47,9 @@ export class InfoMessageComponent {
       default:
         return 'ℹ️';
     }
-  });
+  }
+
+  trackById(_: number, message: MessageOptions): string {
+    return message.id;
+  }
 }

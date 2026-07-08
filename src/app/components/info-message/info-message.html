@@ -1,10 +1,10 @@
-@if (visible()) {
-  <p [class]="type() + '-message'">
-    <span>{{ icon() }}</span>
-    @if (text()) {
-      {{ text() }}
+@for (message of visibleMessages(); track trackById($index, message)) {
+  <p [class]="resolveType(message.kind) + '-message'">
+    <span>{{ resolveIcon(message.kind) }}</span>
+    @if (message.text) {
+      {{ message.text }}
     } @else {
-      {{ textKey() | translate }}
+      {{ message.textKey | translate }}
     }
   </p>
 }

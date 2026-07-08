@@ -1,17 +1,10 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 
-import {
-  APP_LANGUAGES,
-  AppLanguage,
-  getLanguageByCode,
-  persistLanguage,
-  readStoredLanguage,
-} from '../../i18n/language-config';
+import { AppLanguage } from '../../i18n/language-config';
 import { isTabType, TabType } from '../tabs/tabs';
+import { LanguageService } from '../../../service/language.service';
 
 @Component({
   selector: 'app-language-switcher',
@@ -21,21 +14,13 @@ import { isTabType, TabType } from '../tabs/tabs';
   styleUrl: './language-switcher.css',
 })
 export class LanguageSwitcherComponent {
-  private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-
-  private readonly currentLangChange = toSignal(this.translate.onLangChange, {
-    initialValue: null,
-  });
+  private readonly languageService = inject(LanguageService);
 
   readonly isOpen = signal(false);
-  readonly availableLanguages = APP_LANGUAGES;
-
-  readonly selectedLanguage = computed(() => {
-    this.currentLangChange();
-    return getLanguageByCode(this.translate.currentLang || readStoredLanguage());
-  });
+  readonly availableLanguages = this.languageService.languages;
+  readonly selectedLanguage = computed(() => this.languageService.currentLanguage());
 
   toggleDropdown(): void {
     this.isOpen.update((value) => !value);
@@ -47,9 +32,8 @@ export class LanguageSwitcherComponent {
     const currentTabParam = this.route.snapshot.paramMap.get('tab');
     const currentTab: TabType = isTabType(currentTabParam) ? currentTabParam : 'movies';
 
-    persistLanguage(language.code);
+    this.languageService.setLanguage(language.code);
     this.router.navigate(['/', language.code, currentTab]);
-
     this.isOpen.set(false);
   }
 }
