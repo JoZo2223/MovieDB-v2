@@ -16,8 +16,8 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--surface-secondary-color);
+  color: var(--muted-text-color);
   text-align: center;
   padding: 16px;
 }

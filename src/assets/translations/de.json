@@ -40,5 +40,13 @@
     "NO_IMAGE": "Kein Bild",
     "LOADING": "Details werden geladen...",
     "ERROR": "Details konnten nicht geladen werden."
+  },
+  "MENU": {
+    "BEST": "Beste Filme und Serien",
+    "FAVORITES": "Favoriten"
+  },
+  "THEME": {
+    "DARK": "Zum dunklen Modus wechseln",
+    "LIGHT": "Zum hellen Modus wechseln"
   }
 }

@@ -9,7 +9,7 @@ p {
 }
 
 .info-message {
-  color: #6b7280;
+  color: var(--muted-text-color);
 }
 
 .error-message {

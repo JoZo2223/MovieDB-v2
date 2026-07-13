@@ -40,5 +40,13 @@
     "NO_IMAGE": "Bez obrázka",
     "LOADING": "Načítavajú sa detaily...",
     "ERROR": "Nepodarilo sa načítať detaily."
+  },
+  "MENU": {
+    "BEST": "Najlepšie filmy a seriály",
+    "FAVORITES": "Obľúbené"
+  },
+  "THEME": {
+    "DARK": "Prepnúť na tmavý režim",
+    "LIGHT": "Prepnúť na svetlý režim"
   }
 }

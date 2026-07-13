@@ -1,0 +1,8 @@
+<button
+  type="button"
+  class="theme-toggle"
+  (click)="toggleTheme()"
+  [attr.aria-label]="(isDarkMode ? 'THEME.LIGHT' : 'THEME.DARK') | translate"
+  [title]="(isDarkMode ? 'THEME.LIGHT' : 'THEME.DARK') | translate">
+  <span aria-hidden="true">{{ isDarkMode ? '☀' : '☾' }}</span>
+</button>

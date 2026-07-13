@@ -1,11 +1,11 @@
 .header-text h1 {
   margin: 0;
   font-size: 32px;
-  color: #111827;
+  color: var(--heading-color);
 }
 
 .subtitle {
   margin: 8px 0 0;
-  color: #6b7280;
+  color: var(--muted-text-color);
   font-size: 16px;
 }

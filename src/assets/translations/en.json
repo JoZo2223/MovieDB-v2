@@ -40,5 +40,13 @@
     "NO_IMAGE": "No image",
     "LOADING": "Loading details...",
     "ERROR": "Could not load details."
+  },
+  "MENU": {
+    "BEST": "Best movies and series",
+    "FAVORITES": "Favorites"
+  },
+  "THEME": {
+    "DARK": "Switch to dark mode",
+    "LIGHT": "Switch to light mode"
   }
 }

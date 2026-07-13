@@ -40,5 +40,13 @@
     "NO_IMAGE": "Sin imagen",
     "LOADING": "Cargando detalles...",
     "ERROR": "No se pudieron cargar los detalles."
+  },
+  "MENU": {
+    "BEST": "Mejores películas y series",
+    "FAVORITES": "Favoritos"
+  },
+  "THEME": {
+    "DARK": "Cambiar al modo oscuro",
+    "LIGHT": "Cambiar al modo claro"
   }
 }

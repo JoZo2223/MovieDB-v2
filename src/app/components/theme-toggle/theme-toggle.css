@@ -1,0 +1,16 @@
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--surface-color);
+  color: var(--text-color);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--hover-color);
+}

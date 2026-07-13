@@ -5,7 +5,7 @@
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
-  background: #f3f4f6;
+  background: var(--surface-secondary-color);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--muted-text-color);
   font-size: 12px;
 }
 

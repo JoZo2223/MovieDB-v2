@@ -20,6 +20,8 @@ import { HeaderComponent } from '../header/header';
 import { TabsComponent, TabType, isTabType } from '../tabs/tabs';
 import { SearchFieldComponent } from '../search-field/search-field';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher';
+import { SidebarComponent } from '../sidebar/sidebar';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 import { ResultDetailsDialog } from '../result-details-dialog/result-details-dialog';
 import { ResultsSectionComponent } from '../results-section/results-section';
 import { SearchPageStore } from '../../store/search-page.store';
@@ -37,6 +39,8 @@ import { LanguageService } from '../../../service/language.service';
     TabsComponent,
     SearchFieldComponent,
     LanguageSwitcherComponent,
+    SidebarComponent,
+    ThemeToggleComponent,
     ResultsSectionComponent,
   ],
   providers: [SearchPageStore],

@@ -1,66 +1,46 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  font-family: Arial, sans-serif;
-  overflow: visible;
+:root {
+  color-scheme: light;
+  --page-background: #f3f4f6;
+  --surface-color: #ffffff;
+  --surface-secondary-color: #f9fafb;
+  --text-color: #1f2937;
+  --heading-color: #111827;
+  --muted-text-color: #6b7280;
+  --border-color: #d1d5db;
+  --hover-color: #f3f4f6;
+  --accent-color: #2563eb;
+  --accent-soft-color: #eff6ff;
+  --input-background: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.06);
 }
 
-.header {
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
+:root.dark-theme {
+  color-scheme: dark;
+  --page-background: #111827;
+  --surface-color: #1f2937;
+  --surface-secondary-color: #273449;
+  --text-color: #e5e7eb;
+  --heading-color: #f9fafb;
+  --muted-text-color: #9ca3af;
+  --border-color: #4b5563;
+  --hover-color: #374151;
+  --accent-color: #60a5fa;
+  --accent-soft-color: #1e3a5f;
+  --input-background: #111827;
+  --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--page-background);
+  color: var(--text-color);
 }
 
-.tab-btn {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  background: #e5e7eb;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.tab-btn.active {
-  background: #2563eb;
-  color: white;
-}
-
-.search-row input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  box-sizing: border-box;
-}
-
-.content {
-  padding: 20px;
-}
-
-.results {
-  display: grid;
-  gap: 12px;
-}
-
-.result-card {
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background: #f9fafb;
-}
-
-.empty-state {
-  text-align: center;
-  color: #6b7280;
-  padding: 20px;
+button,
+input {
+  font: inherit;
 }
 
 .custom-dialog .mat-mdc-dialog-container {
@@ -69,13 +49,7 @@
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
-  .dialog-content {
-    grid-template-columns: 1fr;
-  }
-
-  .poster {
-    max-width: 200px;
-    margin: 0 auto;
-  }
+.dark-theme .mat-mdc-dialog-surface {
+  background: var(--surface-color);
+  color: var(--text-color);
 }
