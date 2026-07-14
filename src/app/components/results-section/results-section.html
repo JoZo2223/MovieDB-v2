@@ -1,5 +1,5 @@
 <div class="results-header">
-  <h2>{{ titleKey() | translate }}</h2>
+  <h2>{{ titleKey() | translate: titleParams() }}</h2>
 
   @if (showResultCount()) {
     <span class="results-count">

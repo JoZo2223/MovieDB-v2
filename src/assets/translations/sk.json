@@ -43,7 +43,8 @@
   },
   "MENU": {
     "BEST": "Najlepšie filmy a seriály",
-    "FAVORITES": "Obľúbené"
+    "FAVORITES": "Obľúbené",
+    "GENRES": "Žánre"
   },
   "THEME": {
     "DARK": "Prepnúť na tmavý režim",
@@ -58,5 +59,17 @@
     "NOT_CONFIGURED": "Doplňte TMDB account ID a session ID do enviroment.ts.",
     "ADD": "Pridať medzi obľúbené",
     "REMOVE": "Odstrániť z obľúbených"
+  },
+  "GENRES": {
+    "TITLE": "Žánre",
+    "SUBTITLE": "Vyber si žáner a zobraz populárne filmy a seriály.",
+    "LOADING": "Načítavam žánre...",
+    "LOAD_ERROR": "Žánre sa nepodarilo načítať.",
+    "OPEN": "Zobraziť žáner",
+    "BACK": "Späť na žánre",
+    "RESULTS_TITLE": "{{genre}}",
+    "RESULTS_LOADING": "Načítavam tituly v tomto žánri...",
+    "RESULTS_ERROR": "Tituly pre tento žáner sa nepodarilo načítať.",
+    "EMPTY": "V tomto žánri sa nenašli žiadne tituly."
   }
 }

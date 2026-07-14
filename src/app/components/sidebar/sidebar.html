@@ -16,4 +16,13 @@
     <span class="icon" aria-hidden="true">♥</span>
     <span>{{ 'MENU.FAVORITES' | translate }}</span>
   </button>
+
+  <button
+    class="menu-item"
+    [class.active]="activeView() === 'genres'"
+    type="button"
+    (click)="viewChange.emit('genres')">
+    <span class="icon" aria-hidden="true">▦</span>
+    <span>{{ 'MENU.GENRES' | translate }}</span>
+  </button>
 </nav>

@@ -23,6 +23,13 @@
             (tabChange)="setTab($event)">
           </app-tabs>
         }
+
+        @if (activeView() === 'genres' && genres.hasSelectedGenre()) {
+          <app-tabs
+            [activeTab]="genres.activeTab()"
+            (tabChange)="setGenreTab($event)">
+          </app-tabs>
+        }
       </div>
 
       @if (activeView() === 'best') {
@@ -36,20 +43,62 @@
     </div>
 
     <div class="results">
-      <app-results-section
-        [titleKey]="activeView() === 'favorites' ? 'FAVORITES.TITLE' : (store.activeTab() === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES')"
-        [resultCount]="displayedResults().length"
-        [showResultCount]="activeView() === 'favorites' ? displayedResults().length > 0 : store.showResultCount()"
-        [showResultsList]="activeView() === 'favorites' ? (!favorites.isLoading() && displayedResults().length > 0) : store.showResultsList()"
-        [messages]="resultMessages()"
-        [results]="displayedResults()"
-        [activeTab]="store.activeTab()"
-        [favoriteIds]="favorites.favoriteIds()"
-        [favoriteLoadingIds]="favorites.loadingIds()"
-        (itemSelected)="openDetails($event)"
-        (favoriteToggle)="toggleFavorite($event)">
-      </app-results-section>
+      @if (activeView() === 'genres' && !genres.hasSelectedGenre()) {
+        <div class="results-header genre-heading">
+          <h2>{{ 'GENRES.TITLE' | translate }}</h2>
+          <p>{{ 'GENRES.SUBTITLE' | translate }}</p>
+        </div>
 
+        @if (genres.isLoadingGenres()) {
+          <p class="genre-status">{{ 'GENRES.LOADING' | translate }}</p>
+        } @else if (genres.errorKey()) {
+          <p class="genre-status error">{{ genres.errorKey() | translate }}</p>
+        } @else {
+          <app-genre-list
+            [genres]="genres.genres()"
+            (genreSelected)="selectGenre($event)">
+          </app-genre-list>
+        }
+      } @else {
+        @if (activeView() === 'genres') {
+          <button class="back-button" type="button" (click)="clearGenreSelection()">
+            ← {{ 'GENRES.BACK' | translate }}
+          </button>
+        }
+
+        <app-results-section
+          [titleKey]="activeView() === 'favorites'
+            ? 'FAVORITES.TITLE'
+            : activeView() === 'genres'
+              ? 'GENRES.RESULTS_TITLE'
+              : (store.activeTab() === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES')"
+          [titleParams]="activeView() === 'genres' ? { genre: genres.selectedGenre()?.name ?? '' } : {}"
+          [resultCount]="displayedResults().length"
+          [showResultCount]="activeView() === 'favorites'
+            ? displayedResults().length > 0
+            : activeView() === 'genres'
+              ? !genres.isLoadingResults() && displayedResults().length > 0
+              : store.showResultCount()"
+          [showResultsList]="activeView() === 'favorites'
+            ? (!favorites.isLoading() && displayedResults().length > 0)
+            : activeView() === 'genres'
+              ? (!genres.isLoadingResults() && !genres.errorKey() && displayedResults().length > 0)
+              : store.showResultsList()"
+          [messages]="activeView() === 'genres'
+            ? [
+                { id: 'genres-loading', visible: genres.isLoadingResults(), kind: 'loading', textKey: 'GENRES.RESULTS_LOADING' },
+                { id: 'genres-error', visible: !!genres.errorKey(), kind: 'error', textKey: genres.errorKey() },
+                { id: 'genres-empty', visible: !genres.isLoadingResults() && !genres.errorKey() && displayedResults().length === 0, kind: 'empty', textKey: 'GENRES.EMPTY' }
+              ]
+            : resultMessages()"
+          [results]="displayedResults()"
+          [activeTab]="activeView() === 'genres' ? genres.activeTab() : store.activeTab()"
+          [favoriteIds]="favorites.favoriteIds()"
+          [favoriteLoadingIds]="favorites.loadingIds()"
+          (itemSelected)="openDetails($event)"
+          (favoriteToggle)="toggleFavorite($event)">
+        </app-results-section>
+      }
         <div #loadMoreTrigger class="load-more-trigger"></div>
     </div>
   </main>

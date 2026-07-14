@@ -17,6 +17,7 @@ import { MessageOptions } from '../info-message/message-options';
 })
 export class ResultsSectionComponent {
   readonly titleKey = input.required<string>();
+  readonly titleParams = input<Record<string, string>>({});
   readonly resultCount = input(0);
   readonly showResultCount = input(false);
   readonly showResultsList = input(false);

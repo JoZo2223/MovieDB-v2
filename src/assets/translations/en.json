@@ -43,7 +43,8 @@
   },
   "MENU": {
     "BEST": "Best movies and series",
-    "FAVORITES": "Favorites"
+    "FAVORITES": "Favorites",
+    "GENRES": "Genres"
   },
   "THEME": {
     "DARK": "Switch to dark mode",
@@ -58,5 +59,17 @@
     "NOT_CONFIGURED": "Add your TMDB account ID and session ID to enviroment.ts.",
     "ADD": "Add to favorites",
     "REMOVE": "Remove from favorites"
+  },
+  "GENRES": {
+    "TITLE": "Genres",
+    "SUBTITLE": "Choose a genre to browse popular movies and series.",
+    "LOADING": "Loading genres...",
+    "LOAD_ERROR": "Could not load genres.",
+    "OPEN": "Browse genre",
+    "BACK": "Back to genres",
+    "RESULTS_TITLE": "{{genre}}",
+    "RESULTS_LOADING": "Loading titles in this genre...",
+    "RESULTS_ERROR": "Could not load titles for this genre.",
+    "EMPTY": "No titles found in this genre."
   }
 }

@@ -20,6 +20,15 @@ export interface Genre {
   name: string;
 }
 
+export interface GenreResponse {
+  genres: Genre[];
+}
+
+export interface GenreCard extends Genre {
+  mediaTypes: Array<'movie' | 'tv'>;
+  previewPath: string | null;
+}
+
 export interface TmdbDetail {
   id: number;
   title?: string;
@@ -212,6 +221,90 @@ export class ClientService {
     return this.getOrCreateCache(cacheKey, () =>
       this.http.get<TmdbResponse>(`${this.baseUrl}${endpoint}`, { params }).pipe(
         tap((response) => console.log('Series response:', response)),
+      ),
+    );
+  }
+
+
+  getMovieGenres(language: string = 'en-US'): Observable<GenreResponse> {
+    const params = this.createParams({ language });
+    const cacheKey = `genres|movie|lang=${language}`;
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http.get<GenreResponse>(`${this.baseUrl}/genre/movie/list`, { params }),
+    );
+  }
+
+  getSeriesGenres(language: string = 'en-US'): Observable<GenreResponse> {
+    const params = this.createParams({ language });
+    const cacheKey = `genres|tv|lang=${language}`;
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http.get<GenreResponse>(`${this.baseUrl}/genre/tv/list`, { params }),
+    );
+  }
+
+  getGenrePreview(
+    genreId: number,
+    language: string = 'en-US',
+    mediaType: 'movie' | 'tv' = 'movie',
+  ): Observable<string | null> {
+    const params = this.createParams({
+      language,
+      page: '1',
+      sort_by: 'popularity.desc',
+      with_genres: String(genreId),
+      include_adult: 'false',
+    });
+    const cacheKey = `genre-preview|${mediaType}|${genreId}|lang=${language}`;
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http.get<TmdbResponse>(`${this.baseUrl}/discover/${mediaType}`, { params }).pipe(
+        map((response) => response.results.find((item) => !!item.poster_path)?.poster_path ?? null),
+      ),
+    );
+  }
+
+  discoverMoviesByGenre(
+    genreId: number,
+    language: string = 'en-US',
+    page: number = 1,
+  ): Observable<TmdbResponse> {
+    return this.discoverByGenre('movie', genreId, language, page);
+  }
+
+  discoverSeriesByGenre(
+    genreId: number,
+    language: string = 'en-US',
+    page: number = 1,
+  ): Observable<TmdbResponse> {
+    return this.discoverByGenre('tv', genreId, language, page);
+  }
+
+  private discoverByGenre(
+    mediaType: 'movie' | 'tv',
+    genreId: number,
+    language: string,
+    page: number,
+  ): Observable<TmdbResponse> {
+    const params = this.createParams({
+      language,
+      page: String(page),
+      sort_by: 'popularity.desc',
+      with_genres: String(genreId),
+      include_adult: 'false',
+    });
+    const cacheKey = `discover-genre|${mediaType}|${genreId}|page=${page}|lang=${language}`;
+
+    return this.getOrCreateCache(cacheKey, () =>
+      this.http.get<TmdbResponse>(`${this.baseUrl}/discover/${mediaType}`, { params }).pipe(
+        map((response) => ({
+          ...response,
+          results: (response.results ?? []).map((item) => ({
+            ...item,
+            media_type: mediaType,
+          })),
+        })),
       ),
     );
   }

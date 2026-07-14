@@ -43,7 +43,8 @@
   },
   "MENU": {
     "BEST": "Mejores películas y series",
-    "FAVORITES": "Favoritos"
+    "FAVORITES": "Favoritos",
+    "GENRES": "Géneros"
   },
   "THEME": {
     "DARK": "Cambiar al modo oscuro",
@@ -58,5 +59,17 @@
     "NOT_CONFIGURED": "Añade el ID de cuenta TMDB y el ID de sesión en enviroment.ts.",
     "ADD": "Añadir a favoritos",
     "REMOVE": "Quitar de favoritos"
+  },
+  "GENRES": {
+    "TITLE": "Géneros",
+    "SUBTITLE": "Elige un género para descubrir películas y series populares.",
+    "LOADING": "Cargando géneros...",
+    "LOAD_ERROR": "No se pudieron cargar los géneros.",
+    "OPEN": "Ver género",
+    "BACK": "Volver a géneros",
+    "RESULTS_TITLE": "{{genre}}",
+    "RESULTS_LOADING": "Cargando títulos de este género...",
+    "RESULTS_ERROR": "No se pudieron cargar los títulos de este género.",
+    "EMPTY": "No se encontraron títulos en este género."
   }
 }

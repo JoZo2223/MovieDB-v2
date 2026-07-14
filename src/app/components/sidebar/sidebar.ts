@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
-export type MenuView = 'best' | 'favorites';
+export type MenuView = 'best' | 'favorites' | 'genres';
 
 @Component({
   selector: 'app-sidebar',

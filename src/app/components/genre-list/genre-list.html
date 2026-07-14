@@ -1,0 +1,18 @@
+<div class="genre-grid">
+  @for (genre of genres(); track trackById($index, genre)) {
+    <button class="genre-card" type="button" (click)="genreSelected.emit(genre)">
+      @if (genre.previewPath) {
+        <img
+          class="genre-image"
+          [src]="client.getPosterUrl(genre.previewPath)"
+          [alt]="genre.name" />
+      } @else {
+        <div class="genre-placeholder" aria-hidden="true">🎬</div>
+      }
+
+      <span class="genre-overlay"></span>
+      <span class="genre-name">{{ genre.name }}</span>
+      <span class="genre-open">{{ 'GENRES.OPEN' | translate }}</span>
+    </button>
+  }
+</div>

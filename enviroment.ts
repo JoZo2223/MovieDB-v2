@@ -3,6 +3,7 @@ export const environment = {
   tmdbToken: '116be00a8157f34e97c4dfddfad12837',
   tmdbBaseUrl: 'https://api.themoviedb.org/3',
   tmdbImageBaseUrl: 'https://image.tmdb.org/t/p/w500',
+  // Required for TMDB account favourites. Create a user session and fill these values.
   tmdbAccountId: 0,
   tmdbSessionId: '',
 };

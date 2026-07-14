@@ -43,7 +43,8 @@
   },
   "MENU": {
     "BEST": "Meilleurs films et séries",
-    "FAVORITES": "Favoris"
+    "FAVORITES": "Favoris",
+    "GENRES": "Genres"
   },
   "THEME": {
     "DARK": "Passer au mode sombre",
@@ -58,5 +59,17 @@
     "NOT_CONFIGURED": "Ajoutez l’identifiant du compte TMDB et l’identifiant de session dans enviroment.ts.",
     "ADD": "Ajouter aux favoris",
     "REMOVE": "Retirer des favoris"
+  },
+  "GENRES": {
+    "TITLE": "Genres",
+    "SUBTITLE": "Choisissez un genre pour découvrir des films et séries populaires.",
+    "LOADING": "Chargement des genres...",
+    "LOAD_ERROR": "Impossible de charger les genres.",
+    "OPEN": "Voir le genre",
+    "BACK": "Retour aux genres",
+    "RESULTS_TITLE": "{{genre}}",
+    "RESULTS_LOADING": "Chargement des titres de ce genre...",
+    "RESULTS_ERROR": "Impossible de charger les titres de ce genre.",
+    "EMPTY": "Aucun titre trouvé dans ce genre."
   }
 }

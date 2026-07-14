@@ -92,3 +92,41 @@
     margin-left: 0;
   }
 }
+
+.genre-heading {
+  margin-bottom: 18px;
+}
+
+.genre-heading h2 {
+  margin: 0 0 6px;
+}
+
+.genre-heading p {
+  margin: 0;
+  color: var(--muted-text-color);
+}
+
+.genre-status {
+  padding: 28px 12px;
+  text-align: center;
+  color: var(--muted-text-color);
+}
+
+.genre-status.error {
+  color: #c62828;
+}
+
+.back-button {
+  margin-bottom: 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 9px;
+  background: var(--surface-color);
+  color: var(--text-color);
+  font: inherit;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: var(--hover-color);
+}

@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
-import { TmdbItem } from '../../../service/clientService';
+import { GenreCard, TmdbItem } from '../../../service/clientService';
 import { HeaderComponent } from '../header/header';
 import { TabsComponent, TabType, isTabType } from '../tabs/tabs';
 import { SearchFieldComponent } from '../search-field/search-field';
@@ -25,10 +25,12 @@ import { MenuView, SidebarComponent } from '../sidebar/sidebar';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 import { ResultDetailsDialog } from '../result-details-dialog/result-details-dialog';
 import { ResultsSectionComponent } from '../results-section/results-section';
+import { GenreListComponent } from '../genre-list/genre-list';
 import { SearchPageStore } from '../../store/search-page.store';
 import { MessageOptions } from '../info-message/message-options';
 import { LanguageService } from '../../../service/language.service';
 import { FavoritesService } from '../../../service/favorites.service';
+import { GenresService } from '../../../service/genres.service';
 
 @Component({
   selector: 'app-search-page',
@@ -44,6 +46,7 @@ import { FavoritesService } from '../../../service/favorites.service';
     SidebarComponent,
     ThemeToggleComponent,
     ResultsSectionComponent,
+    GenreListComponent,
   ],
   providers: [SearchPageStore],
   templateUrl: './page.html',
@@ -56,12 +59,17 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   private readonly languageService = inject(LanguageService);
   readonly favorites = inject(FavoritesService);
+  readonly genres = inject(GenresService);
   readonly activeView = signal<MenuView>('best');
 
   readonly store = inject(SearchPageStore);
 
   readonly displayedResults = computed(() =>
-    this.activeView() === 'favorites' ? this.favorites.items() : this.store.results(),
+    this.activeView() === 'favorites'
+      ? this.favorites.items()
+      : this.activeView() === 'genres'
+        ? this.genres.results()
+        : this.store.results(),
   );
 
   readonly resultMessages = computed<MessageOptions[]>(() => {
@@ -192,6 +200,22 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
     if (view === 'favorites') {
       this.favorites.load();
     }
+
+    if (view === 'genres') {
+      this.genres.loadGenres();
+    }
+  }
+
+  selectGenre(genre: GenreCard): void {
+    this.genres.selectGenre(genre);
+  }
+
+  clearGenreSelection(): void {
+    this.genres.clearSelection();
+  }
+
+  setGenreTab(tab: TabType): void {
+    this.genres.setActiveTab(tab);
   }
 
   toggleFavorite(event: { item: TmdbItem; type: TabType }): void {
