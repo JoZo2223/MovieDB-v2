@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap, shareReplay } from 'rxjs';
+import { EMPTY, Observable, expand, map, reduce, shareReplay, tap } from 'rxjs';
 import { environment } from '../../enviroment';
 
 export interface TmdbItem {
@@ -12,6 +12,7 @@ export interface TmdbItem {
   release_date?: string;
   first_air_date?: string;
   vote_average: number;
+  media_type?: 'movie' | 'tv';
 }
 
 export interface Genre {
@@ -34,6 +35,18 @@ export interface TmdbDetail {
   number_of_seasons?: number;
   number_of_episodes?: number;
   status?: string;
+}
+
+
+export interface TmdbFavoriteRequest {
+  media_type: 'movie' | 'tv';
+  media_id: number;
+  favorite: boolean;
+}
+
+export interface TmdbFavoriteResponse {
+  status_code: number;
+  status_message: string;
 }
 
 export interface TmdbResponse {
@@ -274,6 +287,95 @@ export class ClientService {
         .pipe(
           tap((response) => console.log('Series translations response:', response)),
         ),
+    );
+  }
+
+  isFavoritesConfigured(): boolean {
+    return environment.tmdbAccountId > 0 && environment.tmdbSessionId.trim().length > 0;
+  }
+
+  updateFavorite(
+    mediaType: 'movie' | 'tv',
+    mediaId: number,
+    favorite: boolean,
+  ): Observable<TmdbFavoriteResponse> {
+    const params = this.createParams({ session_id: environment.tmdbSessionId });
+    const body: TmdbFavoriteRequest = {
+      media_type: mediaType,
+      media_id: mediaId,
+      favorite,
+    };
+
+    return this.http.post<TmdbFavoriteResponse>(
+      `${this.baseUrl}/account/${environment.tmdbAccountId}/favorite`,
+      body,
+      { params },
+    );
+  }
+
+  getFavoriteMovies(
+    page: number = 1,
+    language: string = 'en-US',
+  ): Observable<TmdbResponse> {
+    return this.getFavoritePage('movie', page, language);
+  }
+
+  getFavoriteSeries(
+    page: number = 1,
+    language: string = 'en-US',
+  ): Observable<TmdbResponse> {
+    return this.getFavoritePage('tv', page, language);
+  }
+
+  getAllFavoriteMovies(language: string = 'en-US'): Observable<TmdbItem[]> {
+    return this.getAllFavorites('movie', language);
+  }
+
+  getAllFavoriteSeries(language: string = 'en-US'): Observable<TmdbItem[]> {
+    return this.getAllFavorites('tv', language);
+  }
+
+  private getFavoritePage(
+    mediaType: 'movie' | 'tv',
+    page: number,
+    language: string,
+  ): Observable<TmdbResponse> {
+    const path = mediaType === 'movie' ? 'movies' : 'tv';
+    const params = this.createParams({
+      session_id: environment.tmdbSessionId,
+      language,
+      page: String(page),
+      sort_by: 'created_at.desc',
+    });
+
+    return this.http
+      .get<TmdbResponse>(
+        `${this.baseUrl}/account/${environment.tmdbAccountId}/favorite/${path}`,
+        { params },
+      )
+      .pipe(
+        map((response) => ({
+          ...response,
+          results: (response.results ?? []).map((item) => ({
+            ...item,
+            media_type: mediaType,
+          })),
+        })),
+      );
+  }
+
+  private getAllFavorites(
+    mediaType: 'movie' | 'tv',
+    language: string,
+  ): Observable<TmdbItem[]> {
+    return this.getFavoritePage(mediaType, 1, language).pipe(
+      expand((response) =>
+        response.page < response.total_pages
+          ? this.getFavoritePage(mediaType, response.page + 1, language)
+          : EMPTY,
+      ),
+      map((response) => response.results ?? []),
+      reduce((allItems, pageItems) => [...allItems, ...pageItems], [] as TmdbItem[]),
     );
   }
 

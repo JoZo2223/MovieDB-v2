@@ -3,8 +3,11 @@
     <div class="result-wrapper">
       <app-result-card
         [item]="item"
-        [type]="activeTab()"
-        (cardClick)="onItemSelected($event)">
+        [type]="getItemType(item)"
+        [isFavorite]="favoriteIds().has(getFavoriteKey(item))"
+        [isFavoriteLoading]="favoriteLoadingIds().has(getFavoriteKey(item))"
+        (cardClick)="onItemSelected($event)"
+        (favoriteToggle)="onFavoriteToggle($event)">
       </app-result-card>
     </div>
   }

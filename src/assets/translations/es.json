@@ -48,5 +48,15 @@
   "THEME": {
     "DARK": "Cambiar al modo oscuro",
     "LIGHT": "Cambiar al modo claro"
+  },
+  "FAVORITES": {
+    "TITLE": "Favoritos",
+    "LOADING": "Cargando favoritos...",
+    "EMPTY": "Aún no tienes favoritos.",
+    "LOAD_ERROR": "No se pudieron cargar los favoritos.",
+    "UPDATE_ERROR": "No se pudieron actualizar los favoritos.",
+    "NOT_CONFIGURED": "Añade el ID de cuenta TMDB y el ID de sesión en enviroment.ts.",
+    "ADD": "Añadir a favoritos",
+    "REMOVE": "Quitar de favoritos"
   }
 }

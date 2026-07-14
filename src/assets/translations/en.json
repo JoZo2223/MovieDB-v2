@@ -48,5 +48,15 @@
   "THEME": {
     "DARK": "Switch to dark mode",
     "LIGHT": "Switch to light mode"
+  },
+  "FAVORITES": {
+    "TITLE": "Favorites",
+    "LOADING": "Loading favorites...",
+    "EMPTY": "You have no favorites yet.",
+    "LOAD_ERROR": "Could not load favorites.",
+    "UPDATE_ERROR": "Could not update favorites.",
+    "NOT_CONFIGURED": "Add your TMDB account ID and session ID to enviroment.ts.",
+    "ADD": "Add to favorites",
+    "REMOVE": "Remove from favorites"
   }
 }

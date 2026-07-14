@@ -1,5 +1,8 @@
 <div class="app-layout">
-  <app-sidebar></app-sidebar>
+  <app-sidebar
+    [activeView]="activeView()"
+    (viewChange)="setView($event)">
+  </app-sidebar>
 
   <main class="container">
     <div class="sticky-wrapper">
@@ -14,33 +17,40 @@
           <app-language-switcher></app-language-switcher>
         </div>
 
-        <app-tabs
-          [activeTab]="store.activeTab()"
-          (tabChange)="setTab($event)">
-        </app-tabs>
+        @if (activeView() === 'best') {
+          <app-tabs
+            [activeTab]="store.activeTab()"
+            (tabChange)="setTab($event)">
+          </app-tabs>
+        }
       </div>
 
-      <app-search-field
-        class="search"
-        [searchTerm]="store.searchTerm()"
-        [placeholder]="(store.activeTab() === 'movies' ? 'SEARCH.MOVIES' : 'SEARCH.SERIES') | translate"
-        (searchTermChange)="onSearchChange($event)">
-      </app-search-field>
+      @if (activeView() === 'best') {
+        <app-search-field
+          class="search"
+          [searchTerm]="store.searchTerm()"
+          [placeholder]="(store.activeTab() === 'movies' ? 'SEARCH.MOVIES' : 'SEARCH.SERIES') | translate"
+          (searchTermChange)="onSearchChange($event)">
+        </app-search-field>
+      }
     </div>
 
     <div class="results">
       <app-results-section
-        [titleKey]="store.activeTab() === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES'"
-        [resultCount]="store.results().length"
-        [showResultCount]="store.showResultCount()"
-        [showResultsList]="store.showResultsList()"
+        [titleKey]="activeView() === 'favorites' ? 'FAVORITES.TITLE' : (store.activeTab() === 'movies' ? 'RESULTS.MOVIES' : 'RESULTS.SERIES')"
+        [resultCount]="displayedResults().length"
+        [showResultCount]="activeView() === 'favorites' ? displayedResults().length > 0 : store.showResultCount()"
+        [showResultsList]="activeView() === 'favorites' ? (!favorites.isLoading() && displayedResults().length > 0) : store.showResultsList()"
         [messages]="resultMessages()"
-        [results]="store.results()"
+        [results]="displayedResults()"
         [activeTab]="store.activeTab()"
-        (itemSelected)="openDetails($event)">
+        [favoriteIds]="favorites.favoriteIds()"
+        [favoriteLoadingIds]="favorites.loadingIds()"
+        (itemSelected)="openDetails($event)"
+        (favoriteToggle)="toggleFavorite($event)">
       </app-results-section>
 
-      <div #loadMoreTrigger class="load-more-trigger"></div>
+        <div #loadMoreTrigger class="load-more-trigger"></div>
     </div>
   </main>
 </div>

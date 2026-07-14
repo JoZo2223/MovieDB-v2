@@ -48,5 +48,15 @@
   "THEME": {
     "DARK": "Passer au mode sombre",
     "LIGHT": "Passer au mode clair"
+  },
+  "FAVORITES": {
+    "TITLE": "Favoris",
+    "LOADING": "Chargement des favoris...",
+    "EMPTY": "Vous n’avez pas encore de favoris.",
+    "LOAD_ERROR": "Impossible de charger les favoris.",
+    "UPDATE_ERROR": "Impossible de mettre à jour les favoris.",
+    "NOT_CONFIGURED": "Ajoutez l’identifiant du compte TMDB et l’identifiant de session dans enviroment.ts.",
+    "ADD": "Ajouter aux favoris",
+    "REMOVE": "Retirer des favoris"
   }
 }

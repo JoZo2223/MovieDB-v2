@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+
+export type MenuView = 'best' | 'favorites';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,4 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  readonly activeView = input<MenuView>('best');
+  readonly viewChange = output<MenuView>();
+}

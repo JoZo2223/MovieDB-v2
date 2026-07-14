@@ -1,10 +1,18 @@
 <nav class="sidebar" aria-label="Main navigation">
-  <button class="menu-item active" type="button">
+  <button
+    class="menu-item"
+    [class.active]="activeView() === 'best'"
+    type="button"
+    (click)="viewChange.emit('best')">
     <span class="icon" aria-hidden="true">★</span>
     <span>{{ 'MENU.BEST' | translate }}</span>
   </button>
 
-  <button class="menu-item" type="button">
+  <button
+    class="menu-item"
+    [class.active]="activeView() === 'favorites'"
+    type="button"
+    (click)="viewChange.emit('favorites')">
     <span class="icon" aria-hidden="true">♥</span>
     <span>{{ 'MENU.FAVORITES' | translate }}</span>
   </button>

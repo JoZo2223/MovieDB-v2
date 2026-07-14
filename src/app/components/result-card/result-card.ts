@@ -20,7 +20,10 @@ export class ResultCardComponent {
 
   readonly item = input.required<TmdbItem>();
   readonly type = input.required<TabType>();
+  readonly isFavorite = input(false);
+  readonly isFavoriteLoading = input(false);
   readonly cardClick = output<TmdbItem>();
+  readonly favoriteToggle = output<TmdbItem>();
 
   readonly translatedOverview = signal('');
   readonly isLoadingTranslation = signal(false);
@@ -29,6 +32,14 @@ export class ResultCardComponent {
   readonly posterUrl = computed(() => this.utils.getPosterUrl(this.item().poster_path));
   readonly title = computed(() => this.utils.getDisplayTitle(this.item(), ''));
   readonly overview = computed(() => this.translatedOverview() || this.item().overview || '');
+
+  onFavoriteClick(event: MouseEvent): void {
+    event.stopPropagation();
+
+    if (!this.isFavoriteLoading()) {
+      this.favoriteToggle.emit(this.item());
+    }
+  }
 
   onClick(): void {
     this.cardClick.emit(this.item());

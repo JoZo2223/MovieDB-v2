@@ -23,7 +23,14 @@ export class ResultsSectionComponent {
   readonly results = input<TmdbItem[]>([]);
   readonly activeTab = input<TabType>('movies');
   readonly messages = input<MessageOptions[]>([]);
+  readonly favoriteIds = input<Set<string>>(new Set());
+  readonly favoriteLoadingIds = input<Set<string>>(new Set());
   readonly itemSelected = output<TmdbItem>();
+  readonly favoriteToggle = output<{ item: TmdbItem; type: TabType }>();
+
+  onFavoriteToggle(event: { item: TmdbItem; type: TabType }): void {
+    this.favoriteToggle.emit(event);
+  }
 
   onItemSelected(item: TmdbItem): void {
     this.itemSelected.emit(item);

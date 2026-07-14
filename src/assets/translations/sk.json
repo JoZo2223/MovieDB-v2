@@ -48,5 +48,15 @@
   "THEME": {
     "DARK": "Prepnúť na tmavý režim",
     "LIGHT": "Prepnúť na svetlý režim"
+  },
+  "FAVORITES": {
+    "TITLE": "Obľúbené",
+    "LOADING": "Načítavajú sa obľúbené...",
+    "EMPTY": "Zatiaľ nemáte žiadne obľúbené položky.",
+    "LOAD_ERROR": "Nepodarilo sa načítať obľúbené.",
+    "UPDATE_ERROR": "Nepodarilo sa upraviť obľúbené.",
+    "NOT_CONFIGURED": "Doplňte TMDB account ID a session ID do enviroment.ts.",
+    "ADD": "Pridať medzi obľúbené",
+    "REMOVE": "Odstrániť z obľúbených"
   }
 }

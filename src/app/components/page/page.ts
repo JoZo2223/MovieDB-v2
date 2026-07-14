@@ -7,6 +7,7 @@ import {
   ViewChild,
   computed,
   effect,
+  signal,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -20,13 +21,14 @@ import { HeaderComponent } from '../header/header';
 import { TabsComponent, TabType, isTabType } from '../tabs/tabs';
 import { SearchFieldComponent } from '../search-field/search-field';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher';
-import { SidebarComponent } from '../sidebar/sidebar';
+import { MenuView, SidebarComponent } from '../sidebar/sidebar';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 import { ResultDetailsDialog } from '../result-details-dialog/result-details-dialog';
 import { ResultsSectionComponent } from '../results-section/results-section';
 import { SearchPageStore } from '../../store/search-page.store';
 import { MessageOptions } from '../info-message/message-options';
 import { LanguageService } from '../../../service/language.service';
+import { FavoritesService } from '../../../service/favorites.service';
 
 @Component({
   selector: 'app-search-page',
@@ -53,10 +55,49 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly languageService = inject(LanguageService);
+  readonly favorites = inject(FavoritesService);
+  readonly activeView = signal<MenuView>('best');
 
   readonly store = inject(SearchPageStore);
 
-  readonly resultMessages = computed<MessageOptions[]>(() => [
+  readonly displayedResults = computed(() =>
+    this.activeView() === 'favorites' ? this.favorites.items() : this.store.results(),
+  );
+
+  readonly resultMessages = computed<MessageOptions[]>(() => {
+    if (this.activeView() === 'favorites') {
+      return [
+        {
+          id: 'favorites-loading',
+          visible: this.favorites.isLoading(),
+          kind: 'loading',
+          textKey: 'FAVORITES.LOADING',
+        },
+        {
+          id: 'favorites-error',
+          visible: !!this.favorites.errorKey(),
+          kind: 'error',
+          textKey: this.favorites.errorKey(),
+        },
+        {
+          id: 'favorites-empty',
+          visible:
+            !this.favorites.isLoading() &&
+            !this.favorites.errorKey() &&
+            this.favorites.items().length === 0,
+          kind: 'empty',
+          textKey: 'FAVORITES.EMPTY',
+        },
+      ];
+    }
+
+    return [
+    {
+      id: 'favorites-action-error',
+      visible: !!this.favorites.errorKey(),
+      kind: 'error',
+      textKey: this.favorites.errorKey(),
+    },
     {
       id: 'loading',
       visible: this.store.showLoading(),
@@ -87,7 +128,8 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       kind: 'empty',
       textKey: 'RESULTS.NO_RESULTS',
     },
-  ]);
+    ];
+  });
 
   @ViewChild('loadMoreTrigger', { static: false })
   loadMoreTrigger?: ElementRef<HTMLDivElement>;
@@ -110,6 +152,7 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
 
         if (!this.store.initialized()) {
           this.store.initialize();
+          this.favorites.load();
         }
 
         if (shouldRedirect) {
@@ -143,6 +186,18 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
     this.observer?.disconnect();
   }
 
+  setView(view: MenuView): void {
+    this.activeView.set(view);
+
+    if (view === 'favorites') {
+      this.favorites.load();
+    }
+  }
+
+  toggleFavorite(event: { item: TmdbItem; type: TabType }): void {
+    this.favorites.toggle(event.item, event.type);
+  }
+
   setTab(tab: TabType): void {
     this.router.navigate(['/', this.languageService.currentLanguageCode(), tab]);
   }
@@ -155,7 +210,7 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
     this.dialog.open(ResultDetailsDialog, {
       data: {
         id: item.id,
-        type: this.store.activeTab(),
+        type: this.favorites.getMediaTab(item, this.store.activeTab()),
       },
       width: '900px',
       maxWidth: '95vw',

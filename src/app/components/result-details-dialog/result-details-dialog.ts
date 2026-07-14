@@ -25,7 +25,6 @@ type DetailDialogData = {
   imports: [
     CommonModule,
     MatDialogModule,
-    TranslatePipe,
     ResultDetailContentComponent,
     InfoMessageComponent,
   ],

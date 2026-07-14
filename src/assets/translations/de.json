@@ -48,5 +48,15 @@
   "THEME": {
     "DARK": "Zum dunklen Modus wechseln",
     "LIGHT": "Zum hellen Modus wechseln"
+  },
+  "FAVORITES": {
+    "TITLE": "Favoriten",
+    "LOADING": "Favoriten werden geladen...",
+    "EMPTY": "Sie haben noch keine Favoriten.",
+    "LOAD_ERROR": "Favoriten konnten nicht geladen werden.",
+    "UPDATE_ERROR": "Favoriten konnten nicht aktualisiert werden.",
+    "NOT_CONFIGURED": "Fügen Sie die TMDB-Konto-ID und Sitzungs-ID in enviroment.ts ein.",
+    "ADD": "Zu Favoriten hinzufügen",
+    "REMOVE": "Aus Favoriten entfernen"
   }
 }

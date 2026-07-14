@@ -5,6 +5,18 @@
   (mouseenter)="onHover()"
   tabindex="0"
 >
+  <button
+    class="favorite-button"
+    type="button"
+    [class.favorite-button--active]="isFavorite()"
+    [disabled]="isFavoriteLoading()"
+    [attr.aria-label]="(isFavorite() ? 'FAVORITES.REMOVE' : 'FAVORITES.ADD') | translate"
+    [attr.title]="(isFavorite() ? 'FAVORITES.REMOVE' : 'FAVORITES.ADD') | translate"
+    (click)="onFavoriteClick($event)"
+    (keydown)="$event.stopPropagation()">
+    <span aria-hidden="true">{{ isFavorite() ? '★' : '☆' }}</span>
+  </button>
+
   @if (posterUrl()) {
     <img [src]="posterUrl()" [alt]="title() || ('RESULTS.UNKNOWN_TITLE' | translate)" class="poster" />
   } @else {
